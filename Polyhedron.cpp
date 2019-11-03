@@ -54,9 +54,24 @@ std::vector<Vertex2i> pixelizeVertices(std::vector<Vertex2f> vertices, size2 scr
   return pixelVertices;
 }
 
+void setViewport(size2 screensize, Dimension toIgnore) {
+  switch(toIgnore) {
+    case X:
+      glViewport(0, 0, screensize.width / 2, screensize.height / 2);
+      break;
+    case Y:
+      glViewport(screensize.width / 2, screensize.width / 2, screensize.width / 2, screensize.height / 2);
+      break;
+    case Z:
+      glViewport(0, screensize.width / 2, screensize.width / 2, screensize.height / 2);
+  }
+}
+
 void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
   std::vector<Vertex3f> normalizedVertices = normalizeVertices(vertices, boundingBox);
   std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
+
+  setViewport(screensize, toIgnore);
 
   pixel color = makePixel(0,0,0);
   for (int i = 0; i < numEdges; i++) {

@@ -9,6 +9,8 @@ void Scene::render() {
   BoundingBox boundingBox(polyhedra);
 
   for (const auto& polyhedron: polyhedra) {
+    polyhedron.render(boundingBox, screenSize, Z);
+    polyhedron.render(boundingBox, screenSize, Y);
     polyhedron.render(boundingBox, screenSize, X);
   }
 }
