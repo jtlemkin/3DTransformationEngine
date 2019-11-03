@@ -48,12 +48,12 @@ class Polyhedron {
 
   int numVertices;
   std::vector<Vertex3f> vertices;
+  int numEdges;
+  std::vector<vector2> edges;
 
-  Polyhedron(int numVertices, std::vector<Vertex3f> vertices);
+  Polyhedron(int numVertices, std::vector<Vertex3f> vertices, int numEdges, std::vector<vector2> edges);
 
-  void renderXY(BoundingBox boundingBox, size2 screensize) const;
-  void renderXZ(BoundingBox boundingBox, size2 screensize) const;
-  void renderYZ(BoundingBox boundingBox, size2 screensize) const;
+  void render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const;
 };
 
 #endif //HW2_POLYGON_H

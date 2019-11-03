@@ -4,17 +4,11 @@
 
 #include "Polyhedron.h"
 
-void drawTriangle(Vertex2f p1, Vertex2f p2, Vertex2f p3, pixel color) {
+void drawLine(Vertex2f p1, Vertex2f p2, pixel color) {
   glColor3f(color.r, color.g, color.b);
     glBegin(GL_LINES);
     glVertex2f(p1.x, p1.y);
     glVertex2f(p2.x, p2.y);
-
-    glVertex2f(p2.x, p2.y);
-    glVertex2f(p3.x, p3.y);
-
-    glVertex2f(p3.x, p3.y);
-    glVertex2f(p1.x, p1.y);
   glEnd();
 }
 
@@ -60,21 +54,26 @@ std::vector<Vertex2i> pixelizeVertices(std::vector<Vertex2f> vertices, size2 scr
   return pixelVertices;
 }
 
-Polyhedron::Polyhedron(int numVertices, std::vector<Vertex3f> vertices) : numVertices(numVertices), vertices(vertices) {}
-
-void Polyhedron::renderXY(BoundingBox boundingBox, size2 screensize) const {
+void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
   std::vector<Vertex3f> normalizedVertices = normalizeVertices(vertices, boundingBox);
-  std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, Z);
+  std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
 
-  for (int i = 0; i < numVertices - 2; i++) {
-    pixel color = makePixel(0,0,0);
+  pixel color = makePixel(0,0,0);
+  for (int i = 0; i < numEdges; i++) {
+    /*
+     * Edge.x refers to the index of the starting vertex of an edge and edge.y refers to the index of the ending
+     * vertex of an edge. Indices start at 1 so we subtract all indices by 1.
+    */
 
-    drawTriangle(flattenedVertices[i], flattenedVertices[i + 1], flattenedVertices[i + 2], color);
+    drawLine(flattenedVertices[edges[i].x - 1], flattenedVertices[edges[i].y - 1], color);
   }
 }
-void Polyhedron::renderXZ(BoundingBox boundingBox, size2 screensize) const {
 
-}
-void Polyhedron::renderYZ(BoundingBox boundingBox, size2 screensize) const {
-
+Polyhedron::Polyhedron(int numVertices,
+                       std::vector<Vertex3f> vertices,
+                       int numEdges,
+                       std::vector<vector2> edges)
+    : numVertices(numVertices), numEdges(numEdges) {
+  this->vertices = std::move(vertices);
+  this->edges = std::move(edges);
 }
