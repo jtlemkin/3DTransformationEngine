@@ -29,7 +29,7 @@ size2 makeSize2(int height, int width) {
   return s2;
 }
 
-bounds makeBounds(int min, int max) {
+bounds makeBounds(float min, float max) {
   bounds b;
   b.min = min;
   b.max = max;

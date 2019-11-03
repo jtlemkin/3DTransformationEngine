@@ -15,51 +15,33 @@
 
 //other includes
 #include <iostream>
-#include "Util.h"
-#include "PixelBuffer.h"
-
-/****set in main()****/
-//the number of pixels in the grid
-size2 grid_size;
-
-//the size of pixels sets the inital window height and width
-//don't make the pixels too large or the screen size will be larger than
-//your display size
-int pixel_size;
+#include "Structs/Util.h"
+#include "Structs/PixelBuffer.h"
+#include "Scene.h"
 
 /*Window information*/
 size2 win_size;
 
+std::vector<Scene> scene;
+
 void init();
-void idle();
 void display();
-void recordPixel(vector2 loc, pixel pix);
-void reshape(int width, int height);
 void key(unsigned char ch, int x, int y);
 void mouse(int button, int state, int x, int y);
-void motion(int x, int y);
 void check();
-void drawPixels();
-
-pixelBuffer pb;
 
 int main(int argc, char **argv)
 {
   srand(1);
 
-  //the number of pixels in the grid
-  grid_size = makeSize2(128, 128);
-
-  //the size of pixels sets the inital window height and width
-  //don't make the pixels too large or the screen size will be larger than
-  //your display size
-  pixel_size = 4;
-
   /*Window information*/
-  win_size = makeSize2(grid_size.height * pixel_size, grid_size.width * pixel_size);
+  win_size = makeSize2(256 * 2, 256 * 2);
+
+  std::string fname("/Users/jameslemkin/Developer/ecs175/hw2/test_scene");
+  scene.emplace_back(fname, win_size);
 
   /* MAIN STUFF */
-  pb = makePixelBuffer(grid_size, pixel_size);
+  //pb = makePixelBuffer(grid_size, pixel_size);
 
   /*Set up glut functions*/
   /** See https://www.opengl.org/resources/libraries/glut/spec3/spec3.html ***/
@@ -68,14 +50,12 @@ int main(int argc, char **argv)
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   /*initialize variables, allocate memory, create buffers, etc. */
   //create window of size (win_width x win_height
-  glutInitWindowSize(win_size.width,win_size.height);
-  glutCreateWindow("Project 1");
+  glutInitWindowSize(win_size.width, win_size.height);
+  glutCreateWindow("Project 2");
 
   /*defined glut callback functions*/
   glutDisplayFunc(display); //rendering calls here
-  glutReshapeFunc(reshape); //update GL on window size change
   glutMouseFunc(mouse);     //mouse button events
-  glutPassiveMotionFunc(motion);   //mouse movement events
   glutKeyboardFunc(key);    //Keyboard events
   //glutIdleFunc(idle);       //Function called while program is sitting "idle"
 
@@ -92,16 +72,13 @@ void init()
 {
   //set clear color (Default background to white)
   glClearColor(1.0,1.0,1.0,1.0);
+
+  glMatrixMode(GL_PROJECTION);
+  gluOrtho2D(0.0, win_size.width, 0.0, win_size.height);
+
   //checks for OpenGL errors
   check();
 }
-
-//called repeatedly when glut isn't doing anything else
-/*void idle()
-{
-    //redraw the scene over and over again
-    glutPostRedisplay();
-}*/
 
 //this is where we render the screen
 void display()
@@ -111,41 +88,13 @@ void display()
   //clears the opengl Modelview transformation matrix
   glLoadIdentity();
 
-  displayBuffer(pb);
+  scene[0].render();
+
+  glFlush();
 
   //blits the current opengl framebuffer on the screen
   glutSwapBuffers();
   //checks for opengl errors
-  check();
-}
-
-/*Gets called when display size changes, including initial craetion of the display*/
-void reshape(int width, int height)
-{
-  /*set up projection matrix to define the view port*/
-  //update the ne window width and height
-  win_size.width = width;
-  win_size.height = height;
-
-  //creates a rendering area across the window
-  glViewport(0,0,width,height);
-  // up an orthogonal projection matrix so that
-  // the pixel space is mapped to the grid space
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0,grid_size.width,0,grid_size.height,-10,10);
-
-  //clear the modelview matrix
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  //set pixel size based on width, if the aspect ratio
-  //changes this hack won't work as well
-  pixel_size = width/(float)grid_size.width;
-
-  //set pixel size relative to the grid cell size
-  glPointSize(pixel_size);
-  //check for opengl errors
   check();
 }
 
@@ -163,14 +112,9 @@ void key(unsigned char ch, int x, int y)
   glutPostRedisplay();
 }
 
-
 //gets called when a mouse button is pressed
 void mouse(int button, int state, int x, int y)
 {
-  int grid_x = (int)(x/pixel_size);
-  int grid_y = (int)((win_size.height-y)/pixel_size);
-
-  pixel p = getPixelAt(makeVector2(grid_x, grid_y), pb);
 
   /*switch(button)
   {
@@ -185,30 +129,13 @@ void mouse(int button, int state, int x, int y)
   }*/
 
   if(state !=GLUT_DOWN) {  //button released
-    printf ("MOUSE AT PIXEL: %d %d, GRID: %d %d\n",x,y,grid_x,grid_y);
+    printf ("MOUSE AT PIXEL: %d %d\n",x,y);
     //printf("BUTTON UP\n");
   } else { //button clicked
     //printf("BUTTON DOWN\n");
-
-    //mouse2 = makeVector2(x, y);
   }
 
-  /*if (mouse1.x >= 0 && mouse2.x >= 0) {
-      Line line = Line(mouse1, mouse2, coords.at(0));
-      line.drawBresenham();
-
-      mouse1 = makeVector2(-1, -1);
-      mouse2 = makeVector2(-1, -1);
-  }*/
-
   //redraw the scene after mouse click
-  glutPostRedisplay();
-}
-
-//gets called when the curser moves accross the scene
-void motion(int x, int y)
-{
-  //redraw the scene after mouse movement
   glutPostRedisplay();
 }
 
