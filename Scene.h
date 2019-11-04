@@ -12,16 +12,19 @@
 
 class Scene {
  private:
-  std::vector<Polyhedron> polyhedra;
   size2 screenSize;
 
  public:
+  std::vector<Polyhedron> polyhedra;
+
   explicit Scene(std::string& fname, size2 screenSize);
 
   void render();
 
   std::vector<Polyhedron> readPolyhedron(std::string& fname);
   void writePolyhedron(std::string& fname);
+
+  int getNumPolyhedra();
 };
 
 #endif //HW2_VIEWINGPIPELINE_H

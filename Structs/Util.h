@@ -21,6 +21,12 @@ struct vector2 {
 
 vector2 makeVector2(int x, int y);
 
+struct vector3 {
+  float x, y, z;
+};
+
+vector3 makeVector3(float x, float y, float z);
+
 struct size2 {
   int height, width;
 };
@@ -48,3 +54,5 @@ static bool operator<(const pixel& l, const pixel& r) {
 }
 
 vector2 negative(vector2 v);
+
+vector3 negative(vector3 v);

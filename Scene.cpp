@@ -5,8 +5,22 @@
 #include <iostream>
 #include "Scene.h"
 
+void drawAxes() {
+  pixel color = makePixel(0, 0, 1);
+
+  auto bottom_middle = Vertex2f(0, -1);
+  auto top_middle = Vertex2f(0, 1);
+  auto left_middle = Vertex2f(-1, 0);
+  auto right_middle = Vertex2f(1, 0);
+
+  drawLine(bottom_middle, top_middle, color);
+  drawLine(left_middle, right_middle, color);
+}
+
 void Scene::render() {
   BoundingBox boundingBox(polyhedra);
+
+  //drawAxes();
 
   for (const auto& polyhedron: polyhedra) {
     polyhedron.render(boundingBox, screenSize, Z);
@@ -127,4 +141,8 @@ void Scene::writePolyhedron(std::string& fname) {
 
     f.close();
   }
+}
+
+int Scene::getNumPolyhedra() {
+  return polyhedra.size();
 }

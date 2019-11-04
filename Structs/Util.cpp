@@ -63,3 +63,18 @@ vector2 negative(vector2 v) {
 
   return v;
 }
+vector3 makeVector3(float x, float y, float z) {
+  vector3 v;
+  v.x = x;
+  v.y = y;
+  v.z = z;
+
+  return v;
+}
+vector3 negative(vector3 v) {
+  v.x = -v.x;
+  v.y = -v.y;
+  v.z = -v.z;
+
+  return v;
+}

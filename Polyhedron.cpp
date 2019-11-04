@@ -4,14 +4,6 @@
 
 #include "Polyhedron.h"
 
-void drawLine(Vertex2f p1, Vertex2f p2, pixel color) {
-  glColor3f(color.r, color.g, color.b);
-    glBegin(GL_LINES);
-    glVertex2f(p1.x, p1.y);
-    glVertex2f(p2.x, p2.y);
-  glEnd();
-}
-
 float normalize(float val, float min, float max) {
   if (max == min) {
     return 0;
@@ -67,6 +59,10 @@ void setViewport(size2 screensize, Dimension toIgnore) {
   }
 }
 
+void resetViewport(size2 screensize) {
+  glViewport(0, 0, screensize.width, screensize.height);
+}
+
 void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
   std::vector<Vertex3f> normalizedVertices = normalizeVertices(vertices, boundingBox);
   std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
@@ -82,6 +78,8 @@ void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toI
 
     drawLine(flattenedVertices[edges[i].x - 1], flattenedVertices[edges[i].y - 1], color);
   }
+
+  resetViewport(screensize);
 }
 
 Polyhedron::Polyhedron(int numVertices,
@@ -91,4 +89,46 @@ Polyhedron::Polyhedron(int numVertices,
     : numVertices(numVertices), numEdges(numEdges) {
   this->vertices = std::move(vertices);
   this->edges = std::move(edges);
+}
+
+void Polyhedron::translate(float x, float y, float z) {
+  for(auto& vertex : vertices) {
+    auto v = makeVector3(x, y, z);
+    vertex.translate(v);
+  }
+}
+void Polyhedron::rotate(float angle, vector3 p1, vector3 p2) {
+  for(auto& vertex : vertices) {
+    vertex.rotate_around_axis(angle, p1, p2);
+  }
+}
+vector3 Polyhedron::getCentroid() {
+  float minX, minY, minZ, maxX, maxY, maxZ;
+
+  maxX = std::numeric_limits<float>::min();
+  maxY = std::numeric_limits<float>::min();
+  maxZ = std::numeric_limits<float>::min();
+
+  minX = std::numeric_limits<float>::max();
+  minY = std::numeric_limits<float>::max();
+  minZ = std::numeric_limits<float>::max();
+
+  for(const auto& vertex : vertices) {
+    minX = std::min(minX, vertex.x);
+    minY = std::min(minY, vertex.y);
+    minZ = std::min(minZ, vertex.z);
+
+    maxX = std::max(maxX, vertex.x);
+    maxY = std::max(maxY, vertex.y);
+    maxZ = std::max(maxZ, vertex.z);
+  }
+
+  return makeVector3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
+}
+void Polyhedron::scale(float factor) {
+  vector3 centroid = getCentroid();
+
+  for(auto& vertex : vertices) {
+    vertex.scale(factor, centroid);
+  }
 }

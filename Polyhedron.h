@@ -5,27 +5,9 @@
 #ifndef HW2_POLYGON_H
 #define HW2_POLYGON_H
 
-#include <set>
-#include <vector>
 #include "Vertex2f.h"
-#include "Structs/Util.h"
-#include <limits>
 #include "BoundingBox.h"
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#if defined (__APPLE__) || defined(MACOSX)
-#define GL_SILENCE_DEPRECATION
-#include <OpenGL/OpenGL.h>
-//#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
-
-#else //linux
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
+#include "Structs/DrawPix.h"
 
 /*
    * Testing
@@ -54,6 +36,12 @@ class Polyhedron {
   Polyhedron(int numVertices, std::vector<Vertex3f> vertices, int numEdges, std::vector<vector2> edges);
 
   void render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const;
+
+  void translate(float x, float y, float z);
+  void rotate(float angle, vector3 p1, vector3 p2);
+  void scale(float factor);
+
+  vector3 getCentroid();
 };
 
 #endif //HW2_POLYGON_H

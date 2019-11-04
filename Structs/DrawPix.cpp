@@ -12,3 +12,11 @@ void draw_pix(vector2 loc, pixel color){
   glVertex3f(loc.x + 0.5, loc.y + 0.5, 0);
   glEnd();
 }
+
+void drawLine(Vertex2f p1, Vertex2f p2, pixel color) {
+  glColor3f(color.r, color.g, color.b);
+  glBegin(GL_LINES);
+  glVertex2f(p1.x, p1.y);
+  glVertex2f(p2.x, p2.y);
+  glEnd();
+}

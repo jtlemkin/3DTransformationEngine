@@ -6,6 +6,7 @@
 #define HW2_VERTEX2F_H
 
 #include "Structs/Util.h"
+#include "Matrix4x4.h"
 #include <math.h>
 
 enum Dimension {X, Y, Z};
@@ -16,7 +17,7 @@ class Vertex2i;
 class Vertex2f {
  public:
   Vertex2f(Vertex3f vertex, Dimension toIgnore);
-
+  Vertex2f(float x, float y);
   Vertex2i pixelize(size2 screenSize) const;
 
   friend bool operator<(const Vertex2f &lhs, const Vertex2f &rhs);
@@ -29,10 +30,13 @@ class Vertex2f {
 class Vertex3f {
  public:
   Vertex3f(float x, float y, float z);
- public:
   float x, y, z;
 
   Vertex2f flatten(Dimension d) const;
+
+  void translate(vector3 v);
+  void rotate_around_axis(float alpha, vector3 p1, vector3 p2);
+  void scale(float factor, vector3 centroid);
 };
 
 class Vertex2i {

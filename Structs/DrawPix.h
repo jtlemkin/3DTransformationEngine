@@ -24,5 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Util.h"
+#include "../Vertex2f.h"
 
 void draw_pix(vector2 loc, pixel color);
+void drawLine(Vertex2f p1, Vertex2f p2, pixel color);
