@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Scene.h"
 
+//Draws blue axes lines
 void drawAxes() {
   pixel color = makePixel(0, 0, 1);
 
@@ -17,10 +18,11 @@ void drawAxes() {
   drawLine(left_middle, right_middle, color);
 }
 
+//Renders the scene
 void Scene::render() {
   BoundingBox boundingBox(polyhedra);
 
-  //drawAxes();
+  drawAxes();
 
   for (const auto& polyhedron: polyhedra) {
     polyhedron.render(boundingBox, screenSize, Z);
@@ -29,11 +31,13 @@ void Scene::render() {
   }
 }
 
+//Constructor
 Scene::Scene(std::string& fname, size2 screenSize) {
   this->screenSize = screenSize;
-  polyhedra = readPolyhedron(fname);
+  polyhedra = readPolyhedra(fname);
 }
 
+//Reads a set of vertices from file pointer
 std::vector<Vertex3f> readVerticesFromFile(std::ifstream& f) {
   std::string line;
 
@@ -58,6 +62,7 @@ std::vector<Vertex3f> readVerticesFromFile(std::ifstream& f) {
   return vertices;
 }
 
+//Reads a set of edges from a file pointer
 std::vector<vector2> readEdgesFromFile(std::ifstream& f) {
   std::string line;
 
@@ -81,7 +86,8 @@ std::vector<vector2> readEdgesFromFile(std::ifstream& f) {
   return edges;
 }
 
-std::vector<Polyhedron> Scene::readPolyhedron(std::string& fname) {
+//Reads in polyhedra from a file
+std::vector<Polyhedron> Scene::readPolyhedra(std::string &fname) {
   std::string line;
   std::ifstream f;
   f.open(fname);
@@ -119,6 +125,7 @@ std::vector<Polyhedron> Scene::readPolyhedron(std::string& fname) {
   return polyhedra;
 }
 
+//Writes polyhedra to a file
 void Scene::writePolyhedron(std::string& fname) {
   std::ofstream f(fname);
 
@@ -129,8 +136,10 @@ void Scene::writePolyhedron(std::string& fname) {
       f << polyhedron.numVertices << "\n";
 
       for (int i = 0; i < polyhedron.numVertices; i++) {
-        f << polyhedron.vertices[i].x << " " << polyhedron.vertices[i].y << polyhedron.vertices[i].z << "\n";
+        f << polyhedron.vertices[i].x << " " << polyhedron.vertices[i].y << " " << polyhedron.vertices[i].z << "\n";
       }
+
+      f << polyhedron.numEdges << "\n";
 
       for (int i = 0; i < polyhedron.numEdges; i++) {
         f << polyhedron.edges[i].x << " " << polyhedron.edges[i].y << "\n";
@@ -143,6 +152,7 @@ void Scene::writePolyhedron(std::string& fname) {
   }
 }
 
+//Returns the number of polyhedra in a scene
 int Scene::getNumPolyhedra() {
   return polyhedra.size();
 }

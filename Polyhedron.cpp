@@ -4,6 +4,17 @@
 
 #include "Polyhedron.h"
 
+//Constructor
+Polyhedron::Polyhedron(int numVertices,
+                       std::vector<Vertex3f> vertices,
+                       int numEdges,
+                       std::vector<vector2> edges)
+    : numVertices(numVertices), numEdges(numEdges) {
+  this->vertices = std::move(vertices);
+  this->edges = std::move(edges);
+}
+
+//Normalizes a float to a value between 0 and 1
 float normalize(float val, float min, float max) {
   if (max == min) {
     return 0;
@@ -12,6 +23,7 @@ float normalize(float val, float min, float max) {
   return (val - min) / (max - min) * 2 - 1;
 }
 
+//Returns a vector of vertices that have been normalized within the bounding box
 std::vector<Vertex3f> normalizeVertices(std::vector<Vertex3f> vertices, BoundingBox boundingBox) {
   std::vector<Vertex3f> normalizedVertices;
 
@@ -26,6 +38,7 @@ std::vector<Vertex3f> normalizeVertices(std::vector<Vertex3f> vertices, Bounding
   return normalizedVertices;
 }
 
+//Returns a vector of 2D vertices from 3D vertices for drawing
 std::vector<Vertex2f> flattenVertices(std::vector<Vertex3f> vertices, Dimension d) {
   std::vector<Vertex2f> flattenedVertices;
 
@@ -36,16 +49,7 @@ std::vector<Vertex2f> flattenVertices(std::vector<Vertex3f> vertices, Dimension 
   return flattenedVertices;
 }
 
-std::vector<Vertex2i> pixelizeVertices(std::vector<Vertex2f> vertices, size2 screensize) {
-  std::vector<Vertex2i> pixelVertices;
-
-  for (const auto& vertex : vertices) {
-    pixelVertices.push_back(vertex.pixelize(screensize));
-  }
-
-  return pixelVertices;
-}
-
+//Set the gl viewport to a quarter of the screen
 void setViewport(size2 screensize, Dimension toIgnore) {
   switch(toIgnore) {
     case X:
@@ -59,10 +63,12 @@ void setViewport(size2 screensize, Dimension toIgnore) {
   }
 }
 
+//Resets gl viewport to default
 void resetViewport(size2 screensize) {
   glViewport(0, 0, screensize.width, screensize.height);
 }
 
+//Transforms vertices through viewing pipeline and then draws all edges to screen
 void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
   std::vector<Vertex3f> normalizedVertices = normalizeVertices(vertices, boundingBox);
   std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
@@ -82,26 +88,22 @@ void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toI
   resetViewport(screensize);
 }
 
-Polyhedron::Polyhedron(int numVertices,
-                       std::vector<Vertex3f> vertices,
-                       int numEdges,
-                       std::vector<vector2> edges)
-    : numVertices(numVertices), numEdges(numEdges) {
-  this->vertices = std::move(vertices);
-  this->edges = std::move(edges);
-}
-
+//Translates a polyhedron
 void Polyhedron::translate(float x, float y, float z) {
   for(auto& vertex : vertices) {
     auto v = makeVector3(x, y, z);
     vertex.translate(v);
   }
 }
+
+//Rotates a polyhedron around an arbitrary axis
 void Polyhedron::rotate(float angle, vector3 p1, vector3 p2) {
   for(auto& vertex : vertices) {
     vertex.rotate_around_axis(angle, p1, p2);
   }
 }
+
+//Computes bounds of polyhedron and returns the center point
 vector3 Polyhedron::getCentroid() {
   float minX, minY, minZ, maxX, maxY, maxZ;
 
@@ -125,6 +127,8 @@ vector3 Polyhedron::getCentroid() {
 
   return makeVector3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
 }
+
+//Scales a polyhedron around its centroid
 void Polyhedron::scale(float factor) {
   vector3 centroid = getCentroid();
 

@@ -24,6 +24,8 @@ size2 win_size;
 
 std::vector<Scene> scene;
 
+std::string fname;
+
 void init();
 void display();
 void key(unsigned char ch, int x, int y);
@@ -33,12 +35,19 @@ void runUI();
 
 int main(int argc, char **argv)
 {
+  if (argc != 2) {
+    std::cout << "Please specify the absolute file path you'd like to load the polyhedra\n";
+    return -1;
+  }
+
   srand(1);
 
   /*Window information*/
   win_size = makeSize2(256 * 3, 256 * 3);
 
-  std::string fname("/Users/jameslemkin/Developer/ecs175/hw2/test_scene");
+  std::string temp(argv[1]);
+  fname = temp;
+
   scene.emplace_back(fname, win_size);
 
   /* MAIN STUFF */
@@ -130,14 +139,12 @@ void mouse(int button, int state, int x, int y)
   }*/
 
   if(state !=GLUT_DOWN) {  //button released
-    printf ("MOUSE AT PIXEL: %d %d\n",x,y);
+    //printf ("MOUSE AT PIXEL: %d %d\n",x,y);
     runUI();
+    glutPostRedisplay();
   } else { //button clicked
     //printf("BUTTON DOWN\n");
   }
-
-  //redraw the scene after mouse click
-  glutPostRedisplay();
 }
 
 //checks for any opengl errors in the previous calls and
@@ -184,4 +191,6 @@ void runUI() {
 
     scene[0].polyhedra[polygonID].scale(factor);
   }
+
+  scene[0].writePolyhedron(fname);
 }

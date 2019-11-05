@@ -18,12 +18,7 @@ class Vertex2f {
  public:
   Vertex2f(Vertex3f vertex, Dimension toIgnore);
   Vertex2f(float x, float y);
-  Vertex2i pixelize(size2 screenSize) const;
 
-  friend bool operator<(const Vertex2f &lhs, const Vertex2f &rhs);
-  friend bool operator>(const Vertex2f &lhs, const Vertex2f &rhs);
-  friend bool operator<=(const Vertex2f &lhs, const Vertex2f &rhs);
-  friend bool operator>=(const Vertex2f &lhs, const Vertex2f &rhs);
   float x, y;
 };
 
@@ -44,10 +39,5 @@ class Vertex2i {
   Vertex2i(int x, int y);
   int x, y;
 };
-
-bool operator<(const Vertex2f &lhs, const Vertex2f &rhs);
-bool operator>(const Vertex2f &lhs, const Vertex2f &rhs);
-bool operator<=(const Vertex2f &lhs, const Vertex2f &rhs);
-bool operator>=(const Vertex2f &lhs, const Vertex2f &rhs);
 
 #endif //HW2_VERTEX2F_H

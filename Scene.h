@@ -21,7 +21,7 @@ class Scene {
 
   void render();
 
-  std::vector<Polyhedron> readPolyhedron(std::string& fname);
+  std::vector<Polyhedron> readPolyhedra(std::string &fname);
   void writePolyhedron(std::string& fname);
 
   int getNumPolyhedra();

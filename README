@@ -1,0 +1,20 @@
+Hello Alex or Sai!
+
+Run the executable with the absolute path of the test file you'd like to load the vertices with.
+
+On running the executable you will see a GLUT window partitioned into 4 squares.
+In the top left corner is the XY plane. In the top right is the XZ plane.
+In the bottom left is the YZ plane.
+
+In order to give the program input you must click on the GLUT window.
+
+The range of polyhedra IDs will be printed to the screen and then you will be prompted to give
+a command from the list of options.
+
+Translate takes a Polygon ID, X, Y, Z values to translate the polygon by.
+Rotate takes a Polygon ID, an angle in degrees, and points specifying P1 and P2 of a rotation axis.
+Scales takes a Polygon ID and a scaling factor.
+
+ex. transl 0 .5 .5 .5
+ex. rot 1 45 0 0 0 1 1 1
+ex. scale 0 2
