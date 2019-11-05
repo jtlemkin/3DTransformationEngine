@@ -1,6 +1,8 @@
 Hello Alex or Sai!
 
-Run the executable with the absolute path of the test file you'd like to load the vertices with.
+Compile with the command: make
+
+Run the executable (hw2) with the absolute path of the test file you'd like to load the vertices with.
 
 On running the executable you will see a GLUT window partitioned into 4 squares.
 In the top left corner is the XY plane. In the top right is the XZ plane.
