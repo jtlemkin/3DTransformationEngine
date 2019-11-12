@@ -5,18 +5,9 @@
 #ifndef HW2_MATRIX4X4_H
 #define HW2_MATRIX4X4_H
 
-#include "Vertex2f.h"
+#include "Vertex.h"
 
-class Vertex3f;
-
-class ColVector {
- public:
-  explicit ColVector(Vertex3f p);
-  ColVector();
-  float v[4];
-
-  float& at(int i);
-};
+class Vertex;
 
 class Matrix4x4 {
  public:
@@ -26,7 +17,7 @@ class Matrix4x4 {
 
   float& at(int i, int j);
 
-  ColVector mult(ColVector v);
+  Vertex mult(Vertex v);
   Matrix4x4 mult(Matrix4x4 m2);
   Matrix4x4 transpose();
   void display();

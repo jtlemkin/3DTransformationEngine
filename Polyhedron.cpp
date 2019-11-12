@@ -6,7 +6,7 @@
 
 //Constructor
 Polyhedron::Polyhedron(int numVertices,
-                       std::vector<Vertex3f> vertices,
+                       std::vector<Vertex> vertices,
                        int numEdges,
                        std::vector<vector2> edges)
     : numVertices(numVertices), numEdges(numEdges) {
@@ -24,13 +24,13 @@ float normalize(float val, float min, float max) {
 }
 
 //Returns a vector of vertices that have been normalized within the bounding box
-std::vector<Vertex3f> normalizeVertices(std::vector<Vertex3f> vertices, BoundingBox boundingBox) {
-  std::vector<Vertex3f> normalizedVertices;
+std::vector<Vertex> normalizeVertices(std::vector<Vertex> vertices, BoundingBox boundingBox) {
+  std::vector<Vertex> normalizedVertices;
 
   for (const auto& vertex : vertices) {
-    auto x = normalize(vertex.x, boundingBox.min, boundingBox.max);
-    auto y = normalize(vertex.y, boundingBox.min, boundingBox.max);
-    auto z = normalize(vertex.z, boundingBox.min, boundingBox.max);
+    auto x = normalize(vertex.x(), boundingBox.min, boundingBox.max);
+    auto y = normalize(vertex.y(), boundingBox.min, boundingBox.max);
+    auto z = normalize(vertex.z(), boundingBox.min, boundingBox.max);
 
     normalizedVertices.emplace_back(x, y, z);
   }
@@ -39,11 +39,11 @@ std::vector<Vertex3f> normalizeVertices(std::vector<Vertex3f> vertices, Bounding
 }
 
 //Returns a vector of 2D vertices from 3D vertices for drawing
-std::vector<Vertex2f> flattenVertices(std::vector<Vertex3f> vertices, Dimension d) {
-  std::vector<Vertex2f> flattenedVertices;
+std::vector<Vertex> flattenVertices(std::vector<Vertex> vertices, Dimension d) {
+  std::vector<Vertex> flattenedVertices = vertices;
 
-  for (const auto& vertex : vertices) {
-    flattenedVertices.push_back(vertex.flatten(d));
+  for (auto& vertex : vertices) {
+    vertex.flatten(d);
   }
 
   return flattenedVertices;
@@ -70,8 +70,8 @@ void resetViewport(size2 screensize) {
 
 //Transforms vertices through viewing pipeline and then draws all edges to screen
 void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
-  std::vector<Vertex3f> normalizedVertices = normalizeVertices(vertices, boundingBox);
-  std::vector<Vertex2f> flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
+  auto normalizedVertices = normalizeVertices(vertices, boundingBox);
+  auto flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
 
   setViewport(screensize, toIgnore);
 
@@ -91,8 +91,7 @@ void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toI
 //Translates a polyhedron
 void Polyhedron::translate(float x, float y, float z) {
   for(auto& vertex : vertices) {
-    auto v = makeVector3(x, y, z);
-    vertex.translate(v);
+    vertex.translate(makeVector3(x, y, z));
   }
 }
 
@@ -116,13 +115,13 @@ vector3 Polyhedron::getCentroid() {
   minZ = std::numeric_limits<float>::max();
 
   for(const auto& vertex : vertices) {
-    minX = std::min(minX, vertex.x);
-    minY = std::min(minY, vertex.y);
-    minZ = std::min(minZ, vertex.z);
+    minX = std::min(minX, vertex.x());
+    minY = std::min(minY, vertex.y());
+    minZ = std::min(minZ, vertex.z());
 
-    maxX = std::max(maxX, vertex.x);
-    maxY = std::max(maxY, vertex.y);
-    maxZ = std::max(maxZ, vertex.z);
+    maxX = std::max(maxX, vertex.x());
+    maxY = std::max(maxY, vertex.y());
+    maxZ = std::max(maxZ, vertex.z());
   }
 
   return makeVector3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);

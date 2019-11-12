@@ -16,17 +16,19 @@ Matrix4x4::Matrix4x4() {
 float &Matrix4x4::at(int i, int j) {
   return m[i][j];
 }
-ColVector Matrix4x4::mult(ColVector v) {
-  ColVector vp;
+
+Vertex Matrix4x4::mult(Vertex v) {
+  Vertex vp(0,0,0);
 
   for(int row = 0; row < 4; row++) {
     for(int col = 0; col < 4; col++) {
-      vp.at(row) += at(col, row) * v.at(col);
+      vp.pos[row] += at(col, row) * v.pos[col];
     }
   }
 
   return vp;
 }
+
 Matrix4x4 Matrix4x4::mult(Matrix4x4 m2) {
   Matrix4x4 m3;
 
@@ -40,6 +42,7 @@ Matrix4x4 Matrix4x4::mult(Matrix4x4 m2) {
 
   return m3;
 }
+
 Matrix4x4 Matrix4x4::transpose() {
   Matrix4x4 mT;
 
@@ -51,6 +54,7 @@ Matrix4x4 Matrix4x4::transpose() {
 
   return mT;
 }
+
 void Matrix4x4::display() {
   for(int row = 0; row < 4; row++) {
     for(int col = 0; col < 4; col++) {
@@ -59,19 +63,4 @@ void Matrix4x4::display() {
     std::cout << "\n";
   }
   std::cout << "\n";
-}
-
-ColVector::ColVector(Vertex3f p) {
-  v[0] = p.x;
-  v[1] = p.y;
-  v[2] = p.z;
-  v[3] = 1;
-}
-ColVector::ColVector() {
-  for(int i = 0; i < 4; i++) {
-    v[i] = 0;
-  }
-}
-float &ColVector::at(int i) {
-  return v[i];
 }

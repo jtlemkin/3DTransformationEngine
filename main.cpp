@@ -193,4 +193,6 @@ void runUI() {
   }
 
   scene[0].writePolyhedron(fname);
+
+  glutPostRedisplay();
 }

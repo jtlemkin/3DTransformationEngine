@@ -9,10 +9,10 @@
 void drawAxes() {
   pixel color = makePixel(0, 0, 1);
 
-  auto bottom_middle = Vertex2f(0, -1);
-  auto top_middle = Vertex2f(0, 1);
-  auto left_middle = Vertex2f(-1, 0);
-  auto right_middle = Vertex2f(1, 0);
+  auto bottom_middle = Vertex(0, -1);
+  auto top_middle = Vertex(0, 1);
+  auto left_middle = Vertex(-1, 0);
+  auto right_middle = Vertex(1, 0);
 
   drawLine(bottom_middle, top_middle, color);
   drawLine(left_middle, right_middle, color);
@@ -38,12 +38,12 @@ Scene::Scene(std::string& fname, size2 screenSize) {
 }
 
 //Reads a set of vertices from file pointer
-std::vector<Vertex3f> readVerticesFromFile(std::ifstream& f) {
+std::vector<Vertex> readVerticesFromFile(std::ifstream& f) {
   std::string line;
 
   getline(f, line);
   int num_vertices = std::stoi(line);
-  std::vector<Vertex3f> vertices;
+  std::vector<Vertex> vertices;
 
   vertices.reserve(num_vertices);
 
@@ -136,7 +136,7 @@ void Scene::writePolyhedron(std::string& fname) {
       f << polyhedron.numVertices << "\n";
 
       for (int i = 0; i < polyhedron.numVertices; i++) {
-        f << polyhedron.vertices[i].x << " " << polyhedron.vertices[i].y << " " << polyhedron.vertices[i].z << "\n";
+        f << polyhedron.vertices[i].x() << " " << polyhedron.vertices[i].y() << " " << polyhedron.vertices[i].z() << "\n";
       }
 
       f << polyhedron.numEdges << "\n";

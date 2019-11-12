@@ -3,32 +3,19 @@
 //
 
 #include <cmath>
-#include "Vertex2f.h"
+#include "Vertex.h"
 
 //Flattens a vertex3f to make a vertex2f
-Vertex2f::Vertex2f(Vertex3f vertex, Dimension toIgnore) {
-  switch (toIgnore) {
-    case Z:
-      x = vertex.x;
-      y = vertex.y;
-      break;
-    case Y:
-      x = vertex.x;
-      y = vertex.z;
-      break;
-    case X:
-      x = vertex.y;
-      y = vertex.z;
-      break;
-  }
+void Vertex::flatten(Dimension d) {
+  pos[d] = 0;
 }
 
 //Constructor
-Vertex3f::Vertex3f(float x, float y, float z) : x(x), y(y), z(z) {}
-
-//Removes a dimension from vertex
-Vertex2f Vertex3f::flatten(Dimension d) const {
-  return Vertex2f(*this, d);
+Vertex::Vertex(float x, float y, float z) {
+  pos[0] = x;
+  pos[1] = y;
+  pos[2] = z;
+  pos[3] = 1;
 }
 
 //Creates a translation matrix
@@ -89,18 +76,16 @@ Matrix4x4 getRotationAroundZAxisMatrix(float alpha) {
 }
 
 //Translates a vertex
-void Vertex3f::translate(vector3 v) {
+void Vertex::translate(vector3 v) {
   Matrix4x4 m = getTranslationMatrix(v);
 
-  ColVector pp = m.mult(ColVector(*this));
+  m.display();
 
-  this->x = pp.at(0);
-  this->y = pp.at(1);
-  this->z = pp.at(2);
+  *this = m.mult(*this);
 }
 
 //Rotates a vertex around an arbitrary axis through 7 matrix multiplications
-void Vertex3f::rotate_around_axis(float alpha, vector3 p1, vector3 p2) {
+void Vertex::rotate_around_axis(float alpha, vector3 p1, vector3 p2) {
   float a, b, c, d;
   float lenX, lenY, lenZ, lenV;
 
@@ -172,11 +157,7 @@ void Vertex3f::rotate_around_axis(float alpha, vector3 p1, vector3 p2) {
 
   //m.display();
 
-  ColVector pp = m.mult(ColVector(*this));
-
-  this->x = pp.at(0);
-  this->y = pp.at(1);
-  this->z = pp.at(2);
+  *this = m.mult(*this);
 }
 
 //Creates a matrix to scale a vector by a constant factor
@@ -193,16 +174,17 @@ Matrix4x4 getScaleMatrix(float factor) {
 }
 
 //Scales the vertex of a polygon with respect to its centroid
-void Vertex3f::scale(float factor, vector3 centroid) {
-  ColVector pp = getTranslationMatrix(negative(centroid)).mult(ColVector(*this));
-  pp = getScaleMatrix(factor).mult(pp);
-  pp = getTranslationMatrix(centroid).mult(pp);
-
-  this->x = pp.at(0);
-  this->y = pp.at(1);
-  this->z = pp.at(2);
+void Vertex::scale(float factor, vector3 centroid) {
+  *this = getTranslationMatrix(negative(centroid)).mult(*this);
+  *this = getScaleMatrix(factor).mult(*this);
+  *this = getTranslationMatrix(centroid).mult(*this);
 }
-
-//Constructors
-Vertex2f::Vertex2f(float x, float y) : x(x), y(y) {}
-Vertex2i::Vertex2i(int x, int y) : x(x), y(y) {}
+float Vertex::x() const {
+  return pos[0];
+}
+float Vertex::y() const {
+  return pos[1];
+}
+float Vertex::z() const {
+  return pos[2];
+}

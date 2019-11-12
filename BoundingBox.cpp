@@ -16,13 +16,13 @@ BoundingBox::BoundingBox(std::vector<Polyhedron>& polyhedra) {
 
   for (const auto& polyhedron : polyhedra) {
     for (int i = 0; i < polyhedron.numVertices; i++) {
-      xMin = polyhedron.vertices[i].x < xMin ? polyhedron.vertices[i].x: xMin;
-      yMin = polyhedron.vertices[i].y < yMin ? polyhedron.vertices[i].y: yMin;
-      zMin = polyhedron.vertices[i].z < zMin ? polyhedron.vertices[i].z: zMin;
+      xMin = polyhedron.vertices[i].x() < xMin ? polyhedron.vertices[i].x(): xMin;
+      yMin = polyhedron.vertices[i].y() < yMin ? polyhedron.vertices[i].y(): yMin;
+      zMin = polyhedron.vertices[i].z() < zMin ? polyhedron.vertices[i].z(): zMin;
 
-      xMax = polyhedron.vertices[i].x > xMax ? polyhedron.vertices[i].x: xMax;
-      yMax = polyhedron.vertices[i].y > yMax ? polyhedron.vertices[i].y: yMax;
-      zMax = polyhedron.vertices[i].z > zMax ? polyhedron.vertices[i].z: zMax;
+      xMax = polyhedron.vertices[i].x() > xMax ? polyhedron.vertices[i].x(): xMax;
+      yMax = polyhedron.vertices[i].y() > yMax ? polyhedron.vertices[i].y(): yMax;
+      zMax = polyhedron.vertices[i].z() > zMax ? polyhedron.vertices[i].z(): zMax;
     }
   }
 

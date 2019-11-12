@@ -5,7 +5,7 @@
 #ifndef HW2_POLYGON_H
 #define HW2_POLYGON_H
 
-#include "Vertex2f.h"
+#include "Vertex.h"
 #include "BoundingBox.h"
 #include "Structs/DrawPix.h"
 
@@ -29,11 +29,11 @@ class Polyhedron {
  public:
 
   int numVertices;
-  std::vector<Vertex3f> vertices;
+  std::vector<Vertex> vertices;
   int numEdges;
   std::vector<vector2> edges;
 
-  Polyhedron(int numVertices, std::vector<Vertex3f> vertices, int numEdges, std::vector<vector2> edges);
+  Polyhedron(int numVertices, std::vector<Vertex> vertices, int numEdges, std::vector<vector2> edges);
 
   void render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const;
 

@@ -8,7 +8,7 @@
 #include "Polyhedron.h"
 #include <fstream>
 #include <string>
-#include "Vertex2f.h"
+#include "Vertex.h"
 
 class Scene {
  private:
