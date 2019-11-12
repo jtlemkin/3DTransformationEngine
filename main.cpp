@@ -110,13 +110,6 @@ void display()
 //gets called when a key is pressed on the keyboard
 void key(unsigned char ch, int x, int y)
 {
-  switch(ch)
-  {
-    default:
-      //prints out which key the user hit
-      //printf("User hit the \"%c\" key\n",ch);
-      break;
-  }
   //redraw the scene after keyboard input
   glutPostRedisplay();
 }
@@ -124,25 +117,9 @@ void key(unsigned char ch, int x, int y)
 //gets called when a mouse button is pressed
 void mouse(int button, int state, int x, int y)
 {
-
-  /*switch(button)
-  {
-      case GLUT_LEFT_BUTTON: //left button
-          printf("LEFT ");
-          break;
-      case GLUT_RIGHT_BUTTON: //right button
-          printf("RIGHT ");
-      default:
-          printf("UNKNOWN "); //any other mouse button
-          break;
-  }*/
-
   if(state !=GLUT_DOWN) {  //button released
-    //printf ("MOUSE AT PIXEL: %d %d\n",x,y);
     runHW2UI();
     glutPostRedisplay();
-  } else { //button clicked
-    //printf("BUTTON DOWN\n");
   }
 }
 
