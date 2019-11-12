@@ -4,8 +4,8 @@
 
 #include "Util.h"
 
-pixel makePixel(float r, float g, float b) {
-  pixel pix;
+rgb makeRGB(float r, float g, float b) {
+  rgb pix;
   pix.r = r;
   pix.g = g;
   pix.b = b;
@@ -29,14 +29,6 @@ size2 makeSize2(int height, int width) {
   return s2;
 }
 
-bounds makeBounds(float min, float max) {
-  bounds b;
-  b.min = min;
-  b.max = max;
-
-  return b;
-}
-
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
   std::vector<std::string> tokens;
@@ -49,7 +41,7 @@ std::vector<std::string> split(const std::string& s, char delimiter)
   return tokens;
 }
 
-bool equals(pixel color1, pixel color2) {
+bool equals(rgb color1, rgb color2) {
   return color1.r == color2.r && color1.g == color2.g && color1.b == color2.b;
 }
 

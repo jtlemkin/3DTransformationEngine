@@ -7,7 +7,7 @@
 
 #include "Vertex.h"
 #include "BoundingBox.h"
-#include "Structs/DrawPix.h"
+#include "Structs/glDrawing.h"
 
 /*
    * Testing

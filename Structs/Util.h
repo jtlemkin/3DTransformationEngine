@@ -9,11 +9,11 @@
 #include <vector>
 #include <sstream>
 
-struct pixel {
+struct rgb {
   float r, g, b;
 };
 
-pixel makePixel(float r, float g, float b);
+rgb makeRGB(float r, float g, float b);
 
 struct vector2 {
   int x, y;
@@ -33,26 +33,15 @@ struct size2 {
 
 size2 makeSize2(int height, int width);
 
-struct bounds {
-  float min, max;
-};
-
-bounds makeBounds(float min, float max);
-
 //taken from https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
 std::vector<std::string> split(const std::string& s, char delimiter);
-
-bool equals(pixel color1, pixel color2);
-bool equals(vector2 v1, vector2 v2);
 
 static bool operator<(const vector2& l, const vector2& r) {
   return (l.x < r.x || (l.x == r.x && l.y < r.y));
 }
 
-static bool operator<(const pixel& l, const pixel& r) {
+static bool operator<(const rgb& l, const rgb& r) {
   return (l.r < r.r || (l.r == r.r && l.g < r.g) || (l.r == r.r && l.g == r.g && l.b < r.b));
 }
-
-vector2 negative(vector2 v);
 
 vector3 negative(vector3 v);

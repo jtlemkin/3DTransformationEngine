@@ -16,7 +16,6 @@
 //other includes
 #include <iostream>
 #include "Structs/Util.h"
-#include "Structs/PixelBuffer.h"
 #include "Scene.h"
 
 /*Window information*/
@@ -31,7 +30,7 @@ void display();
 void key(unsigned char ch, int x, int y);
 void mouse(int button, int state, int x, int y);
 void check();
-void runUI();
+void runHW2UI();
 
 int main(int argc, char **argv)
 {
@@ -140,7 +139,7 @@ void mouse(int button, int state, int x, int y)
 
   if(state !=GLUT_DOWN) {  //button released
     //printf ("MOUSE AT PIXEL: %d %d\n",x,y);
-    runUI();
+    runHW2UI();
     glutPostRedisplay();
   } else { //button clicked
     //printf("BUTTON DOWN\n");
@@ -159,7 +158,7 @@ void check()
   }
 }
 
-void runUI() {
+void runHW2UI() {
   std::cout << "IDs of polygons are between 0 and " << scene[0].getNumPolyhedra() - 1 << "\n";
   std::cout << "Choose a command:\n";
   std::cout << "Translate: transl <POLYGON_ID> <X> <Y> <Z>\n";

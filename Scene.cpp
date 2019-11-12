@@ -7,7 +7,7 @@
 
 //Draws blue axes lines
 void drawAxes() {
-  pixel color = makePixel(0, 0, 1);
+  rgb color = makeRGB(0, 0, 1);
 
   auto bottom_middle = Vertex(0, -1);
   auto top_middle = Vertex(0, 1);

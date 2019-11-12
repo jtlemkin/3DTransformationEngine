@@ -22,6 +22,8 @@ class Vertex {
   explicit Vertex(float x=0, float y=0, float z=0);
 
   void flatten(Dimension d);
+
+  //TODO fix broken transformation functions
   void translate(vector3 v);
   void rotate_around_axis(float alpha, vector3 p1, vector3 p2);
   void scale(float factor, vector3 centroid);

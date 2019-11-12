@@ -75,7 +75,7 @@ void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toI
 
   setViewport(screensize, toIgnore);
 
-  pixel color = makePixel(0,0,0);
+  rgb color = makeRGB(0, 0, 0);
   for (int i = 0; i < numEdges; i++) {
     /*
      * Edge.x refers to the index of the starting vertex of an edge and edge.y refers to the index of the ending
