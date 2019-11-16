@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include "Vertex.h"
+#include "Vector3f.h"
 
 Vertex::Vertex(float x, float y, float z, rgb color) : color(color) {
   pos[0] = x;
@@ -191,4 +192,16 @@ float Vertex::z() const {
 }
 void Vertex::addFace(Face& face) {
   faces.push_back(face);
+}
+
+Vector3f Vertex::getNormal() {
+  Vector3f sumOfNormals(0,0,0);
+
+  for (const auto& face : faces) {
+    sumOfNormals = sumOfNormals.add(face.getNormal());
+  }
+
+  Vector3f avgOfNormals = sumOfNormals.divideBy(faces.size());
+
+  return avgOfNormals.normalize();
 }

@@ -80,7 +80,7 @@ void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toI
 
     auto face = faces[i];
 
-    drawFace(flatVertices[face.p1 - 1], flatVertices[face.p2 - 1], flatVertices[face.p3 - 1], color, toIgnore);
+    //drawFace(flatVertices[face.p1 - 1], flatVertices[face.p2 - 1], flatVertices[face.p3 - 1], color, toIgnore);
   }
 
   resetViewport(screensize);
@@ -134,4 +134,33 @@ void Polyhedron::scale(float factor) {
   }
 }
 
-Face::Face(int p1, int p2, int p3, float specularity) : p1(p1), p2(p2), p3(p3), specularity(specularity) {}
+Face::Face(int p1, int p2, int p3, float specularity, std::vector<Vertex>& vertices) : p1(p1), p2(p2), p3(p3),
+                                                                                       specularity(specularity),
+                                                                                       vertices(vertices) {}
+
+Vector3f Face::getNormal() const {
+  auto v1 = getP1();
+  auto v2 = getP2();
+  auto v3 = getP3();
+
+  Vector3f a = Vector3f(v2.x() - v1.x(), v2.y() - v1.y(), v2.z() - v1.z());
+  Vector3f b = Vector3f(v3.x() - v1.x(), v3.y() - v1.y(), v3.z() - v1.z());
+
+  float x = (a.y * b.z) - (a.z - b.y);
+  float y = (a.z - b.x) - (a.x * b.z);
+  float z = (a.x * b.y) - (a.y - b.x);
+
+  return Vector3f(x, y, z);
+}
+
+Vertex Face::getP1() const {
+  return vertices[p1];
+}
+
+Vertex Face::getP2() const {
+  return vertices[p2];
+}
+
+Vertex Face::getP3() const {
+  return vertices[p3];
+}

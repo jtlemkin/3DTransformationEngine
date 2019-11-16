@@ -9,6 +9,7 @@
 #include "BoundingBox.h"
 #include "Structs/glDrawing.h"
 #include "Dimension.h"
+#include "Vector3f.h"
 
 /*
    * Testing
@@ -29,14 +30,23 @@ class BoundingBox;
 class Vertex;
 
 class Face {
- public:
-  Face(int p1, int p2, int p3, float specularity = 1);
+ private:
+  std::vector<Vertex>& vertices;
 
+ public:
   int p1;
   int p2;
   int p3;
 
+  Face(int p1, int p2, int p3, float specularity, std::vector<Vertex>& vertices);
+
+  Vertex getP1() const;
+  Vertex getP2() const;
+  Vertex getP3() const;
+
   float specularity;
+
+  Vector3f getNormal() const;
 };
 
 class Polyhedron {

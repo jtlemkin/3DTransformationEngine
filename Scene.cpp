@@ -80,7 +80,7 @@ std::vector<Face> readFacesFromFile(std::ifstream &f, std::vector<Vertex>& verti
     int p2 = stoi(v_indices.at(1));
     int p3 = stoi(v_indices.at(2));
 
-    faces.emplace_back(p1, p2, p3);
+    faces.emplace_back(p1, p2, p3, 1, vertices);
 
     vertices[p1 - 1].addFace(faces.back());
     vertices[p2 - 1].addFace(faces.back());

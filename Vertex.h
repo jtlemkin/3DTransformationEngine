@@ -9,6 +9,7 @@
 #include "Matrix4x4.h"
 #include "Polyhedron.h"
 #include "Dimension.h"
+#include "Vector3f.h"
 #include <math.h>
 
 class Face;
@@ -33,6 +34,8 @@ class Vertex {
   void scale(float factor, vector3 centroid);
 
   void addFace(Face& face);
+
+  Vector3f getNormal();
 
  private:
   std::vector<Face> faces;
