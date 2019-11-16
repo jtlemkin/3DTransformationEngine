@@ -9,6 +9,8 @@
 #include <vector>
 #include <sstream>
 
+class Vertex;
+
 struct rgb {
   float r, g, b;
 };

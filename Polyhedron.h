@@ -8,6 +8,7 @@
 #include "Vertex.h"
 #include "BoundingBox.h"
 #include "Structs/glDrawing.h"
+#include "Dimension.h"
 
 /*
    * Testing
@@ -25,15 +26,26 @@
 
 class BoundingBox;
 
+class Vertex;
+
+class Face {
+ public:
+  Face(int p1, int p2, int p3, float specularity = 1);
+
+  int p1;
+  int p2;
+  int p3;
+
+  float specularity;
+};
+
 class Polyhedron {
  public:
 
-  int numVertices;
   std::vector<Vertex> vertices;
-  int numEdges;
-  std::vector<vector2> edges;
+  std::vector<Face> faces;
 
-  Polyhedron(int numVertices, std::vector<Vertex> vertices, int numEdges, std::vector<vector2> edges);
+  Polyhedron(std::vector<Vertex> vertices, std::vector<Face> faces);
 
   void render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const;
 

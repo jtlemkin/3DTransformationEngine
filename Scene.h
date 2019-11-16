@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 #include "Vertex.h"
+#include <iostream>
 
 class Scene {
  private:
@@ -21,8 +22,8 @@ class Scene {
 
   void render();
 
-  std::vector<Polyhedron> readPolyhedra(std::string &fname);
-  void writePolyhedron(std::string& fname);
+  std::vector<Polyhedron> readScene(std::string &fname);
+  void writeScene(std::string &fname);
 
   int getNumPolyhedra();
 };

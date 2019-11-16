@@ -28,3 +28,4 @@
 
 void draw_pix(vector2 loc, rgb color);
 void drawLine(Vertex p1, Vertex p2, rgb color);
+void drawFace(Vertex p1, Vertex p2, Vertex p3, rgb color, Dimension toIgnore);

@@ -168,7 +168,8 @@ void runHW2UI() {
     scene[0].polyhedra[polygonID].scale(factor);
   }
 
-  scene[0].writePolyhedron(fname);
+  //TODO: Update write scene
+  //scene[0].writeScene(fname);
 
   glutPostRedisplay();
 }

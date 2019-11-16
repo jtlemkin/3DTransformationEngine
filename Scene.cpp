@@ -2,7 +2,6 @@
 // Created by James Lemkin on 11/2/19.
 //
 
-#include <iostream>
 #include "Scene.h"
 
 //Draws blue axes lines
@@ -34,7 +33,7 @@ void Scene::render() {
 //Constructor
 Scene::Scene(std::string& fname, size2 screenSize) {
   this->screenSize = screenSize;
-  polyhedra = readPolyhedra(fname);
+  polyhedra = readScene(fname);
 }
 
 //Reads a set of vertices from file pointer
@@ -63,31 +62,97 @@ std::vector<Vertex> readVerticesFromFile(std::ifstream& f) {
 }
 
 //Reads a set of edges from a file pointer
-std::vector<vector2> readEdgesFromFile(std::ifstream& f) {
+std::vector<Face> readFacesFromFile(std::ifstream &f, std::vector<Vertex>& vertices) {
   std::string line;
 
   getline(f, line);
-  int num_edges = std::stoi(line);
-  std::vector<vector2> edges;
+  int num_faces = std::stoi(line);
+  std::vector<Face> faces;
 
-  edges.reserve(num_edges);
+  faces.reserve(num_faces);
 
-  for(int j = 0; j < num_edges; j++) {
+  for(int j = 0; j < num_faces; j++) {
     getline(f, line);
 
     auto v_indices = split(line, (char) 32);
 
-    int x = stoi(v_indices.at(0));
-    int y = stoi(v_indices.at(1));
+    int p1 = stoi(v_indices.at(0));
+    int p2 = stoi(v_indices.at(1));
+    int p3 = stoi(v_indices.at(2));
 
-    edges.push_back(makeVector2(x, y));
+    faces.emplace_back(p1, p2, p3);
+
+    vertices[p1 - 1].addFace(faces.back());
+    vertices[p2 - 1].addFace(faces.back());
+    vertices[p3 - 1].addFace(faces.back());
   }
 
-  return edges;
+  return faces;
+}
+
+void readColorsFromFile(std::ifstream& f, std::vector<Vertex>& vertices) {
+  std::string line;
+
+  float r, g, b;
+
+  for (auto &vertice : vertices) {
+    getline(f, line);
+
+    auto vals = split(line, (char) 32);
+
+    r = stof(vals[0]) / 255;
+    g = stof(vals[1]) / 255;
+    b = stof(vals[2]) / 255;
+
+    vertice.color = makeRGB(r, g, b);
+  }
+}
+
+void readSpecularitiesFromFile(std::ifstream &f, std::vector<Face>& faces) {
+  std::string line;
+
+  for (auto &face : faces) {
+    getline(f, line);
+
+    float spec = stof(line);
+
+    face.specularity = spec;
+  }
+}
+
+std::vector<Polyhedron> readPolyhedraFromFile(std::ifstream& f) {
+  std::vector<Polyhedron> polyhedra;
+
+  std::string line;
+
+  getline(f, line);
+  int num_polyhedra = std::stoi(line);
+
+  polyhedra.reserve(num_polyhedra);
+
+  //skip lines
+  getline(f, line);
+
+  for(int i = 0; i < num_polyhedra; i++) {
+    std::vector<Vertex> vertices = readVerticesFromFile(f);
+
+    readColorsFromFile(f, vertices);
+
+    std::vector<Face> faces = readFacesFromFile(f, vertices);
+
+    readSpecularitiesFromFile(f, faces);
+
+    polyhedra.emplace_back(vertices, faces);
+
+    //skip line
+    getline(f, line);
+  }
+
+  return polyhedra;
 }
 
 //Reads in polyhedra from a file
-std::vector<Polyhedron> Scene::readPolyhedra(std::string &fname) {
+std::vector<Polyhedron> Scene::readScene(std::string &fname) {
   std::string line;
   std::ifstream f;
   f.open(fname);
@@ -96,26 +161,7 @@ std::vector<Polyhedron> Scene::readPolyhedra(std::string &fname) {
 
   if (f.is_open())
   {
-    getline(f, line);
-    int num_polyhedra = std::stoi(line);
-
-    polyhedra.reserve(num_polyhedra);
-
-    //skip lines
-    getline(f, line);
-
-    for(int i = 0; i < num_polyhedra; i++) {
-      int num_vertices = 0;
-      auto vertices = readVerticesFromFile(f);
-
-      int num_edges = 0;
-      auto edges = readEdgesFromFile(f);
-
-      polyhedra.emplace_back((int) vertices.size(), vertices, (int) edges.size(), edges);
-
-      //skip line
-      getline(f, line);
-    }
+    polyhedra = readPolyhedraFromFile(f);
   } else {
     std::cout << "FILE UNABLE TO OPEN\n";
   }
@@ -126,23 +172,23 @@ std::vector<Polyhedron> Scene::readPolyhedra(std::string &fname) {
 }
 
 //Writes polyhedra to a file
-void Scene::writePolyhedron(std::string& fname) {
+void Scene::writeScene(std::string &fname) {
   std::ofstream f(fname);
 
   if (f.is_open()) {
     f << polyhedra.size() << "\n\n";
 
     for (const auto& polyhedron : polyhedra) {
-      f << polyhedron.numVertices << "\n";
+      f << polyhedron.vertices.size() << "\n";
 
-      for (int i = 0; i < polyhedron.numVertices; i++) {
+      for (int i = 0; i < polyhedron.vertices.size(); i++) {
         f << polyhedron.vertices[i].x() << " " << polyhedron.vertices[i].y() << " " << polyhedron.vertices[i].z() << "\n";
       }
 
-      f << polyhedron.numEdges << "\n";
+      f << polyhedron.faces.size() << "\n";
 
-      for (int i = 0; i < polyhedron.numEdges; i++) {
-        f << polyhedron.edges[i].x << " " << polyhedron.edges[i].y << "\n";
+      for (int i = 0; i < polyhedron.faces.size(); i++) {
+        f << polyhedron.faces[i].p1 << " " << polyhedron.faces[i].p2 << "\n";
       }
 
       f << "\n";
@@ -154,5 +200,5 @@ void Scene::writePolyhedron(std::string& fname) {
 
 //Returns the number of polyhedra in a scene
 int Scene::getNumPolyhedra() {
-  return polyhedra.size();
+  return (int) polyhedra.size();
 }

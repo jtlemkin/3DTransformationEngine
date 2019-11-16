@@ -15,7 +15,7 @@ BoundingBox::BoundingBox(std::vector<Polyhedron>& polyhedra) {
   zMax = std::numeric_limits<float>::min();
 
   for (const auto& polyhedron : polyhedra) {
-    for (int i = 0; i < polyhedron.numVertices; i++) {
+    for (int i = 0; i < polyhedron.vertices.size(); i++) {
       xMin = polyhedron.vertices[i].x() < xMin ? polyhedron.vertices[i].x(): xMin;
       yMin = polyhedron.vertices[i].y() < yMin ? polyhedron.vertices[i].y(): yMin;
       zMin = polyhedron.vertices[i].z() < zMin ? polyhedron.vertices[i].z(): zMin;

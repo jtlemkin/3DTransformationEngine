@@ -5,13 +5,9 @@
 #include "Polyhedron.h"
 
 //Constructor
-Polyhedron::Polyhedron(int numVertices,
-                       std::vector<Vertex> vertices,
-                       int numEdges,
-                       std::vector<vector2> edges)
-    : numVertices(numVertices), numEdges(numEdges) {
+Polyhedron::Polyhedron(std::vector<Vertex> vertices, std::vector<Face> faces) {
   this->vertices = std::move(vertices);
-  this->edges = std::move(edges);
+  this->faces = std::move(faces);
 }
 
 //Normalizes a float to a value between 0 and 1
@@ -42,7 +38,7 @@ std::vector<Vertex> normalizeVertices(std::vector<Vertex> vertices, BoundingBox 
 std::vector<Vertex> flattenVertices(std::vector<Vertex> vertices, Dimension d) {
   std::vector<Vertex> flattenedVertices = vertices;
 
-  for (auto& vertex : vertices) {
+  for (auto& vertex : flattenedVertices) {
     vertex.flatten(d);
   }
 
@@ -70,19 +66,21 @@ void resetViewport(size2 screensize) {
 
 //Transforms vertices through viewing pipeline and then draws all edges to screen
 void Polyhedron::render(BoundingBox boundingBox, size2 screensize, Dimension toIgnore) const {
-  auto normalizedVertices = normalizeVertices(vertices, boundingBox);
-  auto flattenedVertices = flattenVertices(normalizedVertices, toIgnore);
+  auto normalVertices = normalizeVertices(vertices, boundingBox);
+  auto flatVertices = flattenVertices(normalVertices, toIgnore);
 
   setViewport(screensize, toIgnore);
 
   rgb color = makeRGB(0, 0, 0);
-  for (int i = 0; i < numEdges; i++) {
+  for (int i = 0; i < faces.size(); i++) {
     /*
      * Edge.x refers to the index of the starting vertex of an edge and edge.y refers to the index of the ending
      * vertex of an edge. Indices start at 1 so we subtract all indices by 1.
     */
 
-    drawLine(flattenedVertices[edges[i].x - 1], flattenedVertices[edges[i].y - 1], color);
+    auto face = faces[i];
+
+    drawFace(flatVertices[face.p1 - 1], flatVertices[face.p2 - 1], flatVertices[face.p3 - 1], color, toIgnore);
   }
 
   resetViewport(screensize);
@@ -135,3 +133,5 @@ void Polyhedron::scale(float factor) {
     vertex.scale(factor, centroid);
   }
 }
+
+Face::Face(int p1, int p2, int p3, float specularity) : p1(p1), p2(p2), p3(p3), specularity(specularity) {}

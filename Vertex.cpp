@@ -5,17 +5,18 @@
 #include <cmath>
 #include "Vertex.h"
 
-//Flattens a vertex3f to make a vertex2f
-void Vertex::flatten(Dimension d) {
-  pos[d] = 0;
-}
-
-//Constructor
-Vertex::Vertex(float x, float y, float z) {
+Vertex::Vertex(float x, float y, float z, rgb color) : color(color) {
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;
   pos[3] = 1;
+
+  faces = std::vector<Face>({});
+}
+
+//Flattens a vertex3f to make a vertex2f
+void Vertex::flatten(Dimension d) {
+  pos[d] = 0;
 }
 
 //Creates a translation matrix
@@ -187,4 +188,7 @@ float Vertex::y() const {
 }
 float Vertex::z() const {
   return pos[2];
+}
+void Vertex::addFace(Face& face) {
+  faces.push_back(face);
 }

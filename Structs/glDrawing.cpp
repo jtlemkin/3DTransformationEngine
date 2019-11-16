@@ -20,3 +20,12 @@ void drawLine(Vertex p1, Vertex p2, rgb color) {
   glVertex2f(p2.x(), p2.y());
   glEnd();
 }
+
+void drawFace(Vertex p1, Vertex p2, Vertex p3, rgb color) {
+  glColor3f(color.r, color.g, color.b);
+  glBegin(GL_LINE_LOOP);
+  glVertex2f(p1.x(), p1.y());
+  glVertex2f(p2.x(), p2.y());
+  glVertex2f(p3.x(), p3.y());
+  glEnd();
+}
