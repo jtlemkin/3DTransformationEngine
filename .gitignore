@@ -5,3 +5,5 @@ Makefile
 *.cmake
 *.cbp
 hw2
+test_scene
+bunny_scene
