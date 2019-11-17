@@ -31,7 +31,10 @@ void Scene::render() {
 }
 
 //Constructor
-Scene::Scene(std::string& fname, size2 screenSize) {
+Scene::Scene(std::string& fname, size2 screenSize, Color ambientColor, Vector3f eyeLoc)
+    : ambientColor(Color(0,0,0)), eyeLoc(Vector3f(0,0,0)), darkest(Color(INT_MAX, INT_MAX, INT_MAX)),
+      brightest(Color(0, 0, 0)) {
+
   this->screenSize = screenSize;
   polyhedra = readScene(fname);
 }
@@ -202,3 +205,45 @@ void Scene::writeScene(std::string &fname) {
 int Scene::getNumPolyhedra() {
   return (int) polyhedra.size();
 }
+
+Color Scene::computeColorOfVertex(Vertex &vertex) {
+  float distanceBetweenPointAndEye = eyeLoc.minus(Vector3f(vertex)).magnitude();
+  float intensityAtV = lights[0].intensity / (distanceBetweenPointAndEye + lights[0].k);
+
+  Vector3f vertexNormal = vertex.getNormal();
+  Vector3f lightVector = Vector3f(lights[0].loc.x - vertex.x(), lights[0].loc.y - vertex.y(),
+                                  lights[0].loc.z - vertex.z());
+  Vector3f reflectionVector = vertexNormal.multiply(2 * vertexNormal.dot(lightVector)).minus(lightVector);
+  Vector3f viewVector = eyeLoc.minus(Vector3f(vertex));
+
+  Color diffuseColor = vertex.diffuseColor.mult(lightVector.dot(vertex.getNormal()));
+  Color specularColor = lights[0].color.mult((float) pow(reflectionVector.dot(viewVector), vertex.getSpecularity()));
+  Color vertexColor = ambientColor.add(diffuseColor.add(specularColor).mult(intensityAtV));
+
+  updateExtrema(vertexColor);
+
+  return vertexColor;
+}
+
+int max(int a, int b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+int min(int a, int b) {
+  return a < b ? a : b;
+}
+
+void Scene::updateExtrema(Color color) {
+  brightest.r = max(brightest.r, color.r);
+  brightest.g = max(brightest.g, color.g);
+  brightest.b = max(brightest.b, color.b);
+
+  darkest.r = min(darkest.r, color.r);
+  darkest.g = min(darkest.g, color.g);
+  darkest.b = min(darkest.b, color.b);
+}
+

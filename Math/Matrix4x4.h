@@ -5,7 +5,7 @@
 #ifndef HW2_MATRIX4X4_H
 #define HW2_MATRIX4X4_H
 
-#include "Vertex.h"
+#include "../Vertex.h"
 
 class Vertex;
 

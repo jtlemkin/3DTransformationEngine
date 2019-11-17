@@ -4,9 +4,9 @@
 
 #include <cmath>
 #include "Vertex.h"
-#include "Vector3f.h"
+#include "Math/Vector3f.h"
 
-Vertex::Vertex(float x, float y, float z, rgb color) : color(color) {
+Vertex::Vertex(float x, float y, float z, Color diffuseColor) : diffuseColor(diffuseColor) {
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;
@@ -204,4 +204,14 @@ Vector3f Vertex::getNormal() {
   Vector3f avgOfNormals = sumOfNormals.divideBy(faces.size());
 
   return avgOfNormals.normalize();
+}
+
+int Vertex::getSpecularity() {
+  int specularity = 0;
+
+  for (const auto& face : faces) {
+    specularity += face.specularity;
+  }
+
+  return specularity / (int) faces.size();
 }

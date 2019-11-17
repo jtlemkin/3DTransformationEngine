@@ -9,16 +9,27 @@
 #include <fstream>
 #include <string>
 #include "Vertex.h"
+#include "Color.h"
+#include "LightSource.h"
 #include <iostream>
+#include <math.h>
 
 class Scene {
  private:
   size2 screenSize;
+  Color ambientColor;
+  Vector3f eyeLoc;
+  Color brightest;
+  Color darkest;
+
+  std::vector<LightSource> lights;
+
+  void updateExtrema(Color color);
 
  public:
   std::vector<Polyhedron> polyhedra;
 
-  explicit Scene(std::string& fname, size2 screenSize);
+  Scene(std::string& fname, size2 screenSize, Color ambientColor = Color(0,0,0), Vector3f eyeLoc = Vector3f(0,0,0));
 
   void render();
 
@@ -26,6 +37,8 @@ class Scene {
   void writeScene(std::string &fname);
 
   int getNumPolyhedra();
+
+  Color computeColorOfVertex(Vertex& vertex);
 };
 
 #endif //HW2_VIEWINGPIPELINE_H

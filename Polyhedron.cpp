@@ -3,6 +3,7 @@
 //
 
 #include "Polyhedron.h"
+#include "Scene.h"
 
 //Constructor
 Polyhedron::Polyhedron(std::vector<Vertex> vertices, std::vector<Face> faces) {

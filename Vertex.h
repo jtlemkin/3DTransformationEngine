@@ -6,10 +6,11 @@
 #define HW2_VERTEX2F_H
 
 #include "Structs/Util.h"
-#include "Matrix4x4.h"
+#include "Math/Matrix4x4.h"
 #include "Polyhedron.h"
-#include "Dimension.h"
-#include "Vector3f.h"
+#include "Math/Dimension.h"
+#include "Math/Vector3f.h"
+#include "Color.h"
 #include <math.h>
 
 class Face;
@@ -18,13 +19,15 @@ class Vertex {
  public:
   float pos[4];
 
+  Color diffuseColor;
+
   float x() const;
   float y() const;
   float z() const;
 
   rgb color;
 
-  explicit Vertex(float x=0, float y=0, float z=0, rgb color = makeRGB(1,1,1));
+  explicit Vertex(float x=0, float y=0, float z=0, Color diffuseColor = Color(0,0,0));
 
   void flatten(Dimension d);
 
@@ -36,6 +39,7 @@ class Vertex {
   void addFace(Face& face);
 
   Vector3f getNormal();
+  int getSpecularity();
 
  private:
   std::vector<Face> faces;

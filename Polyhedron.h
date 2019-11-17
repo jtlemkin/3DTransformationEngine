@@ -8,8 +8,8 @@
 #include "Vertex.h"
 #include "BoundingBox.h"
 #include "Structs/glDrawing.h"
-#include "Dimension.h"
-#include "Vector3f.h"
+#include "Math/Dimension.h"
+#include "Math/Vector3f.h"
 
 /*
    * Testing
@@ -28,6 +28,8 @@
 class BoundingBox;
 
 class Vertex;
+
+class Vector3f;
 
 class Face {
  private:
