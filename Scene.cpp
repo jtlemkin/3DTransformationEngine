@@ -5,8 +5,8 @@
 #include "Scene.h"
 
 //Draws blue axes lines
-void drawAxes() {
-  rgb color = makeRGB(0, 0, 1);
+/*void drawAxes() {
+  Color color(0, 0, 255);
 
   auto bottom_middle = Vertex(0, -1);
   auto top_middle = Vertex(0, 1);
@@ -15,39 +15,39 @@ void drawAxes() {
 
   drawLine(bottom_middle, top_middle, color);
   drawLine(left_middle, right_middle, color);
-}
+}*/
 
 //Renders the scene
 void Scene::render() {
-  BoundingBox boundingBox(polyhedra);
+  BoundingBox boundingBox = computeBoundingBox();
 
-  drawAxes();
+  //drawAxes();
+
+  lightVertices();
 
   for (const auto& polyhedron: polyhedra) {
-    polyhedron.render(boundingBox, screenSize, Z);
-    polyhedron.render(boundingBox, screenSize, Y);
-    polyhedron.render(boundingBox, screenSize, X);
+    polyhedron.render(*this, boundingBox, Z);
+    polyhedron.render(*this, boundingBox, Y);
+    polyhedron.render(*this, boundingBox, X);
   }
 }
 
 //Constructor
-Scene::Scene(std::string& fname, size2 screenSize, Color ambientColor, Vector3f eyeLoc)
-    : ambientColor(Color(0,0,0)), eyeLoc(Vector3f(0,0,0)), darkest(Color(INT_MAX, INT_MAX, INT_MAX)),
-      brightest(Color(0, 0, 0)) {
+Scene::Scene(std::string& fname, Vector2i screenSize, Color ambientColor, Vector3f eyeLoc)
+    : ambientColor(ambientColor), eyeLoc(eyeLoc), darkest(Color(INT_MAX, INT_MAX, INT_MAX)),
+      brightest(Color(0, 0, 0)), screenSize(screenSize) {
 
-  this->screenSize = screenSize;
   polyhedra = readScene(fname);
 }
 
 //Reads a set of vertices from file pointer
-std::vector<Vertex> readVerticesFromFile(std::ifstream& f) {
+void readVerticesFromFile(std::ifstream& f, Polyhedron& polyhedron) {
   std::string line;
 
   getline(f, line);
   int num_vertices = std::stoi(line);
-  std::vector<Vertex> vertices;
 
-  vertices.reserve(num_vertices);
+  polyhedron.vertices.reserve(num_vertices);
 
   for(int j = 0; j < num_vertices; j++) {
     getline(f, line);
@@ -58,63 +58,58 @@ std::vector<Vertex> readVerticesFromFile(std::ifstream& f) {
     float y = stof(points.at(1));
     float z = stof(points.at(2));
 
-    vertices.emplace_back(x, y, z);
+    polyhedron.vertices.emplace_back(x, y, z);
   }
-
-  return vertices;
 }
 
 //Reads a set of edges from a file pointer
-std::vector<Face> readFacesFromFile(std::ifstream &f, std::vector<Vertex>& vertices) {
+void readFacesFromFile(std::ifstream &f, Polyhedron& polyhedron) {
   std::string line;
 
   getline(f, line);
   int num_faces = std::stoi(line);
-  std::vector<Face> faces;
 
-  faces.reserve(num_faces);
+  polyhedron.triangles.reserve(num_faces);
 
   for(int j = 0; j < num_faces; j++) {
     getline(f, line);
 
     auto v_indices = split(line, (char) 32);
 
-    int p1 = stoi(v_indices.at(0));
-    int p2 = stoi(v_indices.at(1));
-    int p3 = stoi(v_indices.at(2));
+    int v1ID = stoi(v_indices.at(0)) - 1;
+    int v2ID = stoi(v_indices.at(1)) - 1;
+    int v3ID = stoi(v_indices.at(2)) - 1;
 
-    faces.emplace_back(p1, p2, p3, 1, vertices);
+    polyhedron.triangles.emplace_back(j, v1ID, v2ID, v3ID, 1);
 
-    vertices[p1 - 1].addFace(faces.back());
-    vertices[p2 - 1].addFace(faces.back());
-    vertices[p3 - 1].addFace(faces.back());
+    polyhedron.vertices[v1ID].addTriangle(j);
+    polyhedron.vertices[v2ID].addTriangle(j);
+    polyhedron.vertices[v3ID].addTriangle(j);
   }
-
-  return faces;
 }
 
-void readColorsFromFile(std::ifstream& f, std::vector<Vertex>& vertices) {
+void readColorsFromFile(std::ifstream& f, Polyhedron& polyhedron) {
   std::string line;
 
   float r, g, b;
 
-  for (auto &vertice : vertices) {
+  for (auto &vertice : polyhedron.vertices) {
     getline(f, line);
 
     auto vals = split(line, (char) 32);
 
-    r = stof(vals[0]) / 255;
-    g = stof(vals[1]) / 255;
-    b = stof(vals[2]) / 255;
+    r = stoi(vals[0]);
+    g = stoi(vals[1]);
+    b = stoi(vals[2]);
 
-    vertice.color = makeRGB(r, g, b);
+    vertice.diffuseColor = Color(r, g, b);
   }
 }
 
-void readSpecularitiesFromFile(std::ifstream &f, std::vector<Face>& faces) {
+void readSpecularitiesFromFile(std::ifstream &f, Polyhedron& polyhedron) {
   std::string line;
 
-  for (auto &face : faces) {
+  for (auto &face : polyhedron.triangles) {
     getline(f, line);
 
     float spec = stof(line);
@@ -137,15 +132,15 @@ std::vector<Polyhedron> readPolyhedraFromFile(std::ifstream& f) {
   getline(f, line);
 
   for(int i = 0; i < num_polyhedra; i++) {
-    std::vector<Vertex> vertices = readVerticesFromFile(f);
+    polyhedra.emplace_back();
 
-    readColorsFromFile(f, vertices);
+    readVerticesFromFile(f, polyhedra.back());
 
-    std::vector<Face> faces = readFacesFromFile(f, vertices);
+    readColorsFromFile(f, polyhedra.back());
 
-    readSpecularitiesFromFile(f, faces);
+    readFacesFromFile(f, polyhedra.back());
 
-    polyhedra.emplace_back(vertices, faces);
+    readSpecularitiesFromFile(f, polyhedra.back());
 
     //skip line
     getline(f, line);
@@ -175,7 +170,7 @@ std::vector<Polyhedron> Scene::readScene(std::string &fname) {
 }
 
 //Writes polyhedra to a file
-void Scene::writeScene(std::string &fname) {
+/*void Scene::writeScene(std::string &fname) {
   std::ofstream f(fname);
 
   if (f.is_open()) {
@@ -188,10 +183,10 @@ void Scene::writeScene(std::string &fname) {
         f << polyhedron.vertices[i].x() << " " << polyhedron.vertices[i].y() << " " << polyhedron.vertices[i].z() << "\n";
       }
 
-      f << polyhedron.faces.size() << "\n";
+      f << polyhedron.triangles.size() << "\n";
 
-      for (int i = 0; i < polyhedron.faces.size(); i++) {
-        f << polyhedron.faces[i].p1 << " " << polyhedron.faces[i].p2 << "\n";
+      for (int i = 0; i < polyhedron.triangles.size(); i++) {
+        f << polyhedron.triangles[i].p1 << " " << polyhedron.triangles[i].p2 << "\n";
       }
 
       f << "\n";
@@ -199,51 +194,57 @@ void Scene::writeScene(std::string &fname) {
 
     f.close();
   }
-}
+}*/
 
 //Returns the number of polyhedra in a scene
 int Scene::getNumPolyhedra() {
   return (int) polyhedra.size();
 }
 
-Color Scene::computeColorOfVertex(Vertex &vertex) {
-  float distanceBetweenPointAndEye = eyeLoc.minus(Vector3f(vertex)).magnitude();
-  float intensityAtV = lights[0].intensity / (distanceBetweenPointAndEye + lights[0].k);
+void Scene::updateExtrema(Color color) {
+  brightest.r = std::max(brightest.r, color.r);
+  brightest.g = std::max(brightest.g, color.g);
+  brightest.b = std::max(brightest.b, color.b);
 
-  Vector3f vertexNormal = vertex.getNormal();
-  Vector3f lightVector = Vector3f(lights[0].loc.x - vertex.x(), lights[0].loc.y - vertex.y(),
-                                  lights[0].loc.z - vertex.z());
-  Vector3f reflectionVector = vertexNormal.multiply(2 * vertexNormal.dot(lightVector)).minus(lightVector);
-  Vector3f viewVector = eyeLoc.minus(Vector3f(vertex));
-
-  Color diffuseColor = vertex.diffuseColor.mult(lightVector.dot(vertex.getNormal()));
-  Color specularColor = lights[0].color.mult((float) pow(reflectionVector.dot(viewVector), vertex.getSpecularity()));
-  Color vertexColor = ambientColor.add(diffuseColor.add(specularColor).mult(intensityAtV));
-
-  updateExtrema(vertexColor);
-
-  return vertexColor;
+  darkest.r = std::min(darkest.r, color.r);
+  darkest.g = std::min(darkest.g, color.g);
+  darkest.b = std::min(darkest.b, color.b);
 }
 
-int max(int a, int b) {
-  if (a > b) {
-    return a;
-  } else {
-    return b;
+void Scene::addLightSource(LightSource& light) {
+  lights.push_back(light);
+}
+
+void Scene::lightVertices() {
+  for (auto& polyedron : polyhedra) {
+    for (int i = 0; i < polyedron.vertices.size(); i++) {
+      Vertex& v = polyedron.vertices[i];
+
+      v.color = polyedron.getVertexColor(i, eyeLoc, lights[0], ambientColor);
+
+      updateExtrema(v.color);
+    }
   }
 }
 
-int min(int a, int b) {
-  return a < b ? a : b;
+RGB Scene::normalize(Color color) {
+  float r = (float) (color.r - darkest.r) / (float) (brightest.r - darkest.r);
+  float g = (float) (color.g - darkest.g) / (float) (brightest.g - darkest.g);
+  float b = (float) (color.b - darkest.b) / (float) (brightest.b - darkest.b);
+
+  return RGB(r, g, b);
 }
 
-void Scene::updateExtrema(Color color) {
-  brightest.r = max(brightest.r, color.r);
-  brightest.g = max(brightest.g, color.g);
-  brightest.b = max(brightest.b, color.b);
+BoundingBox Scene::computeBoundingBox() {
+  BoundingBox bb;
 
-  darkest.r = min(darkest.r, color.r);
-  darkest.g = min(darkest.g, color.g);
-  darkest.b = min(darkest.b, color.b);
+  for (const auto& polyhedron : polyhedra) {
+    for (int i = 0; i < polyhedron.vertices.size(); i++) {
+      bb.addPoint(Vector3f(polyhedron.vertices[i].x(), polyhedron.vertices[i].y(), polyhedron.vertices[i].z()));
+    }
+  }
+
+  return bb;
 }
+
 

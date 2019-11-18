@@ -5,15 +5,12 @@
 #ifndef HW2_VECTOR3F_H
 #define HW2_VECTOR3F_H
 
-#include "../Vertex.h"
-
 class Vector3f {
  public:
 
   float x, y, z;
 
   Vector3f(float x, float y, float z);
-  explicit Vector3f(Vertex& v);
 
   Vector3f add(const Vector3f v2) const;
   Vector3f minus(const Vector3f v2) const;

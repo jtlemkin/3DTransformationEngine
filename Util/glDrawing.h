@@ -23,9 +23,16 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Util.h"
-#include "../Vertex.h"
+#include "../Math/Dimension.h"
 
-void draw_pix(vector2 loc, rgb color);
-void drawLine(Vertex p1, Vertex p2, rgb color);
+class Vertex;
+
+void draw_pix(int x, int y, float r, float g, float b);
+//void drawLine(Vertex p1, Vertex p2, rgb color);
 //void drawFace(Vertex p1, Vertex p2, Vertex p3, rgb color, Dimension toIgnore);
+
+//Set the gl viewport to a quarter of the screen
+void setViewport(int width, int height, Dimension toIgnore);
+
+//Resets gl viewport to default
+void resetViewport(int width, int height);

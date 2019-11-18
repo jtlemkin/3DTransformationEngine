@@ -4,24 +4,22 @@
 
 #include <cmath>
 #include "Vertex.h"
-#include "Math/Vector3f.h"
+#include "../Math/Vector3f.h"
 
-Vertex::Vertex(float x, float y, float z, Color diffuseColor) : diffuseColor(diffuseColor) {
+Vertex::Vertex(int id, float x, float y, float z, Color diffuseColor) : id(id), diffuseColor(diffuseColor),
+                                                                        color(Color(0,0,0)) {
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;
   pos[3] = 1;
-
-  faces = std::vector<Face>({});
 }
 
-//Flattens a vertex3f to make a vertex2f
 void Vertex::flatten(Dimension d) {
   pos[d] = 0;
 }
 
 //Creates a translation matrix
-Matrix4x4 getTranslationMatrix(vector3 v) {
+/*Matrix4x4 getTranslationMatrix(vector3 v) {
   Matrix4x4 m;
 
   m.at(0,0) = 1;
@@ -180,7 +178,8 @@ void Vertex::scale(float factor, vector3 centroid) {
   *this = getTranslationMatrix(negative(centroid)).mult(*this);
   *this = getScaleMatrix(factor).mult(*this);
   *this = getTranslationMatrix(centroid).mult(*this);
-}
+}*/
+
 float Vertex::x() const {
   return pos[0];
 }
@@ -190,28 +189,7 @@ float Vertex::y() const {
 float Vertex::z() const {
   return pos[2];
 }
-void Vertex::addFace(Face& face) {
-  faces.push_back(face);
-}
 
-Vector3f Vertex::getNormal() {
-  Vector3f sumOfNormals(0,0,0);
-
-  for (const auto& face : faces) {
-    sumOfNormals = sumOfNormals.add(face.getNormal());
-  }
-
-  Vector3f avgOfNormals = sumOfNormals.divideBy(faces.size());
-
-  return avgOfNormals.normalize();
-}
-
-int Vertex::getSpecularity() {
-  int specularity = 0;
-
-  for (const auto& face : faces) {
-    specularity += face.specularity;
-  }
-
-  return specularity / (int) faces.size();
+void Vertex::addTriangle(int triangleID) {
+  triangleIDs.push_back(triangleID);
 }

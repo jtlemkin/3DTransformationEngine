@@ -15,22 +15,19 @@
 
 //other includes
 #include <iostream>
-#include "Structs/Util.h"
 #include "Scene.h"
-
-/*Window information*/
-size2 win_size;
 
 std::vector<Scene> scene;
 
 std::string fname;
 
-void init();
+void init(Vector2i win_size);
 void display();
 void key(unsigned char ch, int x, int y);
 void mouse(int button, int state, int x, int y);
 void check();
 void runHW2UI();
+void runHW3UI();
 
 int main(int argc, char **argv)
 {
@@ -42,12 +39,18 @@ int main(int argc, char **argv)
   srand(1);
 
   /*Window information*/
-  win_size = makeSize2(256 * 3, 256 * 3);
+  Vector2i win_size = Vector2i(256 * 3, 256 * 3);
 
   std::string temp(argv[1]);
   fname = temp;
 
+  //runHW3UI();
+
   scene.emplace_back(fname, win_size);
+
+  LightSource light = LightSource(1, 100, Vector3f(1,1,1), Color(255, 255, 255));
+
+  scene[0].addLightSource(light);
 
   /* MAIN STUFF */
   //pb = makePixelBuffer(grid_size, pixel_size);
@@ -59,7 +62,7 @@ int main(int argc, char **argv)
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   /*initialize variables, allocate memory, create buffers, etc. */
   //create window of size (win_width x win_height
-  glutInitWindowSize(win_size.width, win_size.height);
+  glutInitWindowSize(win_size.x, win_size.y);
   glutCreateWindow("Project 2");
 
   /*defined glut callback functions*/
@@ -69,7 +72,7 @@ int main(int argc, char **argv)
   //glutIdleFunc(idle);       //Function called while program is sitting "idle"
 
   //initialize opengl variables
-  init();
+  init(win_size);
   //start glut event loop
   glutMainLoop();
 
@@ -77,13 +80,13 @@ int main(int argc, char **argv)
 }
 
 /*initialize gl stufff*/
-void init()
+void init(Vector2i win_size)
 {
   //set clear color (Default background to white)
-  glClearColor(1.0,1.0,1.0,1.0);
+  glClearColor(0,0,0,0);
 
   glMatrixMode(GL_PROJECTION);
-  gluOrtho2D(0.0, win_size.width, 0.0, win_size.height);
+  gluOrtho2D(0.0, win_size.x, 0.0, win_size.y);
 
   //checks for OpenGL errors
   check();
@@ -118,7 +121,7 @@ void key(unsigned char ch, int x, int y)
 void mouse(int button, int state, int x, int y)
 {
   if(state !=GLUT_DOWN) {  //button released
-    runHW2UI();
+    //runHW2UI();
     glutPostRedisplay();
   }
 }
@@ -135,7 +138,7 @@ void check()
   }
 }
 
-void runHW2UI() {
+/*void runHW2UI() {
   std::cout << "IDs of polygons are between 0 and " << scene[0].getNumPolyhedra() - 1 << "\n";
   std::cout << "Choose a command:\n";
   std::cout << "Translate: transl <POLYGON_ID> <X> <Y> <Z>\n";
@@ -172,4 +175,12 @@ void runHW2UI() {
   //scene[0].writeScene(fname);
 
   glutPostRedisplay();
-}
+}*/
+
+/*void runHW3UI() {
+  std::cout << "To render scene:\n";
+  std::cout << "Input rgb values for the ambient lighting\n";
+  std::cout << "A value for the distance from the light to the face\n";
+  std::cout << "The x, y, z values of the location of the eye\n";
+  std::cout << ""
+}*/

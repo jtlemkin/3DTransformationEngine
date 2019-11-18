@@ -5,18 +5,23 @@
 #ifndef HW2_VIEWINGPIPELINE_H
 #define HW2_VIEWINGPIPELINE_H
 
-#include "Polyhedron.h"
+#include "Polyhedra/Polyhedron.h"
 #include <fstream>
 #include <string>
-#include "Vertex.h"
-#include "Color.h"
-#include "LightSource.h"
+#include "Polyhedra/Vertex.h"
+#include "Lighting/Color.h"
+#include "Lighting/LightSource.h"
+#include "Math/BoundingBox.h"
+#include "Math/Vector2i.h"
 #include <iostream>
 #include <math.h>
+#include "Util/Util.h"
+#include "Lighting/RGB.h"
+
+class Polyhedron;
 
 class Scene {
  private:
-  size2 screenSize;
   Color ambientColor;
   Vector3f eyeLoc;
   Color brightest;
@@ -25,11 +30,18 @@ class Scene {
   std::vector<LightSource> lights;
 
   void updateExtrema(Color color);
+  void lightVertices();
+
+  BoundingBox computeBoundingBox();
+
+  void render(Polyhedron& polyhedron);
 
  public:
+  Vector2i screenSize;
+
   std::vector<Polyhedron> polyhedra;
 
-  Scene(std::string& fname, size2 screenSize, Color ambientColor = Color(0,0,0), Vector3f eyeLoc = Vector3f(0,0,0));
+  Scene(std::string& fname, Vector2i screenSize, Color ambientColor = Color(255,255,255), Vector3f eyeLoc = Vector3f(1,1,1));
 
   void render();
 
@@ -38,7 +50,9 @@ class Scene {
 
   int getNumPolyhedra();
 
-  Color computeColorOfVertex(Vertex& vertex);
+  void addLightSource(LightSource& light);
+
+  RGB normalize(Color color);
 };
 
 #endif //HW2_VIEWINGPIPELINE_H

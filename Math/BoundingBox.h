@@ -5,17 +5,22 @@
 #ifndef HW2_BOUNDINGBOX_H
 #define HW2_BOUNDINGBOX_H
 
-#include "Polyhedron.h"
-
-class Polyhedron;
+#include "Vector3f.h"
+#include <limits>
+#include <algorithm>
 
 class BoundingBox {
  public:
   float min, max;
 
-  explicit BoundingBox(std::vector<Polyhedron>& polyhedra);
+  BoundingBox();
+
+  void addPoint(Vector3f p);
+
  private:
   float xMin, xMax, yMin, yMax, zMin, zMax;
+
+  void computeMargins();
 };
 
 #endif //HW2_BOUNDINGBOX_H

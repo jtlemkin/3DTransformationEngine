@@ -5,8 +5,9 @@
 #ifndef HW2_LIGHTSOURCE_H
 #define HW2_LIGHTSOURCE_H
 
-#include "Math/Vector3f.h"
+#include "../Math/Vector3f.h"
 #include "Color.h"
+
 class LightSource {
  public:
   float intensity;
