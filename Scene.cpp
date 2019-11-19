@@ -227,14 +227,6 @@ void Scene::lightVertices() {
   }
 }
 
-RGB Scene::normalize(Color color) {
-  float r = (float) (color.r - darkest.r) / (float) (brightest.r - darkest.r);
-  float g = (float) (color.g - darkest.g) / (float) (brightest.g - darkest.g);
-  float b = (float) (color.b - darkest.b) / (float) (brightest.b - darkest.b);
-
-  return RGB(r, g, b);
-}
-
 BoundingBox Scene::computeBoundingBox() {
   BoundingBox bb;
 

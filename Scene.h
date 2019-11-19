@@ -39,18 +39,15 @@ class Scene {
 
   std::vector<Polyhedron> polyhedra;
 
-  Scene(std::string& fname, Vector2i screenSize, Color ambientColor = Color(255,255,255), Vector3f eyeLoc = Vector3f(1,1,1));
+  Scene(std::string& fname, Vector2i screenSize, Color ambientColor = Color(255,255,255),
+        Vector3f eyeLoc = Vector3f(1,1,1));
 
   void render();
 
   std::vector<Polyhedron> readScene(std::string &fname);
   void writeScene(std::string &fname);
 
-  int getNumPolyhedra();
-
   void addLightSource(LightSource& light);
-
-  RGB normalize(Color color);
 };
 
 #endif //HW2_VIEWINGPIPELINE_H
