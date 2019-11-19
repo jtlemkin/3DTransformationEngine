@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   std::string temp(argv[1]);
   fname = temp;
 
-  //runHW3UI();
+  runHW3UI();
 
   scene.emplace_back(fname, win_size);
 
@@ -124,7 +124,7 @@ void key(unsigned char ch, int x, int y)
 void mouse(int button, int state, int x, int y)
 {
   if(state !=GLUT_DOWN) {  //button released
-    //runHW2UI();
+    runHW3UI();
     glutPostRedisplay();
   }
 }
@@ -180,10 +180,34 @@ void check()
   glutPostRedisplay();
 }*/
 
-/*void runHW3UI() {
-  std::cout << "To render scene:\n";
-  std::cout << "Input rgb values for the ambient lighting\n";
-  std::cout << "A value for the distance from the light to the face\n";
-  std::cout << "The x, y, z values of the location of the eye\n";
-  std::cout << ""
-}*/
+void runHW3UI() {
+  std::cout << "Change ambient color: a <r> <g> <b>\n";
+  std::cout << "Change light intensity: i <intensity>\n";
+  std::cout << "Change eye loc: e <x> <y> <z>\n";
+  std::cout << "Change light loc: l <x> <y> <z>\n";
+  std::cout << "Change light color: c <r> <g> <b>\n";
+
+  std::string choice;
+  std::cin >> choice;
+
+  int polygonID;
+  std::cin >> polygonID;
+
+  if (choice.compare("a") == 0) {
+    float r, g, b;
+    std::cin >> r >> g >> b;
+
+    scene[0].ambientColor = RGB(r, g, b);
+  } else if (choice.compare("i") == 0) {
+    float i;
+
+    std::cin >> i;
+
+    scene[0].lights[0].intensity = i;
+  } else if (choice.compare("e") == 0) {
+    float x, y, z;
+    std::cin >> x >> y >> z;
+
+    scene[0].eyeLoc = Vector3f(x, y, z);
+  }
+}

@@ -20,20 +20,19 @@
 class Polyhedron;
 
 class Scene {
- private:
+ public:
   RGB ambientColor;
   Vector3f eyeLoc;
   RGB brightest;
   RGB darkest;
-
-  std::vector<LightSource> lights;
 
   void updateExtrema(RGB color);
   void lightVertices();
 
   BoundingBox computeBoundingBox();
 
- public:
+  std::vector<LightSource> lights;
+
   Vector2i screenSize;
 
   std::vector<Polyhedron> polyhedra;
