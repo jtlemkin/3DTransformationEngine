@@ -40,6 +40,7 @@ class Polyhedron {
   Polyhedron();
 
   void render(Scene& scene, BoundingBox& boundingBox, Dimension toIgnore) const;
+  void renderTriangle(int triangleID, Scene& scene, Dimension toIgnore) const;
 
   Vector3f getVertexNormal(int vertexID);
   Vector3f getFaceNormal(int triangleID);

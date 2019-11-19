@@ -2,9 +2,7 @@
 // Created by James Lemkin on 11/2/19.
 //
 
-#include <cmath>
 #include "Vertex.h"
-#include "../Math/Vector3f.h"
 
 Vertex::Vertex(int id, float x, float y, float z, Color diffuseColor) : id(id), diffuseColor(diffuseColor),
                                                                         color(Color(0,0,0)) {
@@ -14,8 +12,15 @@ Vertex::Vertex(int id, float x, float y, float z, Color diffuseColor) : id(id), 
   pos[3] = 1;
 }
 
-void Vertex::flatten(Dimension d) {
-  pos[d] = 0;
+Vector2f Vertex::flatten(Dimension d) {
+  switch (d) {
+    case Z:
+      return Vector2f(x(), y());
+    case Y:
+      return Vector2f(x(), z());
+    case X:
+      return Vector2f(y(), z());
+  }
 }
 
 //Creates a translation matrix

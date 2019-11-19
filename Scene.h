@@ -34,8 +34,6 @@ class Scene {
 
   BoundingBox computeBoundingBox();
 
-  void render(Polyhedron& polyhedron);
-
  public:
   Vector2i screenSize;
 

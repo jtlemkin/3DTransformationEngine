@@ -21,13 +21,12 @@
 
 //other includes
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "../Math/Dimension.h"
 
-class Vertex;
-
-void draw_pix(int x, int y, float r, float g, float b);
+void draw_pix(int x, int y, int z, float r, float g, float b, Dimension toIgnore);
+void draw_pix(float x, float y, float r, float g, float b);
 //void drawLine(Vertex p1, Vertex p2, rgb color);
 //void drawFace(Vertex p1, Vertex p2, Vertex p3, rgb color, Dimension toIgnore);
 

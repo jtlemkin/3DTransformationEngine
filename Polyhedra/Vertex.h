@@ -11,8 +11,9 @@
 #include "../Math/Vector3f.h"
 #include "../Lighting/Color.h"
 #include "../Scene.h"
-#include <math.h>
 #include "../Lighting/LightSource.h"
+#include "../Math/Vector2f.h"
+#include <cmath>
 
 
 class Triangle;
@@ -34,9 +35,8 @@ class Vertex {
 
   explicit Vertex(int id, float x=0, float y=0, float z=0, Color diffuseColor = Color(0,0,0));
 
-  void flatten(Dimension d);
+  Vector2f flatten(Dimension d);
   void addTriangle(int triangleID);
-  void computeColor(Vector3f& eyeLoc, LightSource light, Color ambientColor);
 
   //TODO fix broken transformation functions
   //void translate(vector3 v);

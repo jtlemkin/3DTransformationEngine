@@ -85,6 +85,9 @@ void init(Vector2i win_size)
   //set clear color (Default background to white)
   glClearColor(0,0,0,0);
 
+  glColor3f(1, 1, 1);
+  glPointSize(1);
+
   glMatrixMode(GL_PROJECTION);
   gluOrtho2D(0.0, win_size.x, 0.0, win_size.y);
 

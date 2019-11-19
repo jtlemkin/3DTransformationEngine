@@ -6,10 +6,26 @@
 
 //Draws a single "pixel" given the current grid size
 //don't change anything in this for project 1
-void draw_pix(int x, int y, float r, float g, float b){
+/*void draw_pix(int x, int y, int z, float r, float g, float b, Dimension toIgnore){
   glBegin(GL_POINTS);
   glColor3f(r, g, b);
-  glVertex3f(x + 0.5, y + 0.5, 0);
+
+  switch (toIgnore) {
+    case Z:
+      glVertex3f(x + 0.5, y + 0.5, 0);
+    case Y:
+      glVertex3f(x + 0.5, z + 0.5, 0);
+    case X:
+      glVertex3f(y + 0.5, z + 0.5, 0);
+  }
+
+  glEnd();
+}*/
+
+void draw_pix(float x, float y, float r, float g, float b){
+  glBegin(GL_POINTS);
+    glColor3f(r, g, b);
+    glVertex3f(x, y, 0);
   glEnd();
 }
 

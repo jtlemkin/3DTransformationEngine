@@ -58,7 +58,7 @@ void readVerticesFromFile(std::ifstream& f, Polyhedron& polyhedron) {
     float y = stof(points.at(1));
     float z = stof(points.at(2));
 
-    polyhedron.vertices.emplace_back(x, y, z);
+    polyhedron.vertices.emplace_back(j, x, y, z);
   }
 }
 
@@ -239,8 +239,8 @@ BoundingBox Scene::computeBoundingBox() {
   BoundingBox bb;
 
   for (const auto& polyhedron : polyhedra) {
-    for (int i = 0; i < polyhedron.vertices.size(); i++) {
-      bb.addPoint(Vector3f(polyhedron.vertices[i].x(), polyhedron.vertices[i].y(), polyhedron.vertices[i].z()));
+    for (const auto &vertex : polyhedron.vertices) {
+      bb.addPoint(Vector3f(vertex.x(), vertex.y(), vertex.z()));
     }
   }
 
