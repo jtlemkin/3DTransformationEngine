@@ -52,8 +52,8 @@ int computeIntersection(int y, Vector2i p1, Vector2i p2) {
   }
 }
 
-void getIntensityRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, Color c1, Color c2, Color c3, Color* cMin,
-                       Color* cMax) {
+void getIntensityRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, RGB c1, RGB c2, RGB c3, RGB* cMin,
+                       RGB* cMax) {
   int i1 = computeIntersection(y, p1, p2);
   int i2 = computeIntersection(y, p2, p3);
   int i3 = computeIntersection(y, p3, p1);
@@ -61,7 +61,7 @@ void getIntensityRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, Color c1, C
 
 }
 
-Color computeGouraudRange(Color *cMin, Color *cMax, Color c1, Color c2, Vector2i p1, Vector2i p2) {
+RGB computeGouraudRange(RGB *cMin, RGB *cMax, RGB c1, RGB c2, Vector2i p1, Vector2i p2) {
   if (cMin->r == -1) {
     *cMin = c1;
     *cMax = c2;
@@ -72,7 +72,7 @@ Color computeGouraudRange(Color *cMin, Color *cMax, Color c1, Color c2, Vector2i
   }
 }
 
-Color computeHorizontalGouraudRange(Color *cMin, Color *cMax, Color c1, Color c2, Vector2i p1, Vector2i p2) {
+RGB computeHorizontalGouraudRange(RGB *cMin, RGB *cMax, RGB c1, RGB c2, Vector2i p1, Vector2i p2) {
   if (p1.x < p2.x) {
     *cMin = c1;
     *cMax = c2;
@@ -82,8 +82,8 @@ Color computeHorizontalGouraudRange(Color *cMin, Color *cMax, Color c1, Color c2
   }
 }
 
-void computeIntersectionLocationsAndColors(int y, Vector2i p1, Vector2i p2, Vector2i p3, Color c1, Color c2, Color c3,
-                                           int *xMin, int *xMax, Color *cMin, Color *cMax) {
+void computeIntersectionLocationsAndColors(int y, Vector2i p1, Vector2i p2, Vector2i p3, RGB c1, RGB c2, RGB c3,
+                                           int *xMin, int *xMax, RGB *cMin, RGB *cMax) {
 
   int i1 = computeIntersection(y, p1, p2);
   int i2 = computeIntersection(y, p2, p3);

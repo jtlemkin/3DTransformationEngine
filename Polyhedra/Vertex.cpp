@@ -4,8 +4,8 @@
 
 #include "Vertex.h"
 
-Vertex::Vertex(int id, float x, float y, float z, Color diffuseColor) : id(id), diffuseColor(diffuseColor),
-                                                                        color(Color(0,0,0)) {
+Vertex::Vertex(int id, float x, float y, float z, RGB diffuseColor) : id(id), diffuseColor(diffuseColor),
+                                                                        color(RGB(0,0,0)) {
   pos[0] = x;
   pos[1] = y;
   pos[2] = z;

@@ -3,5 +3,5 @@
 //
 
 #include "LightSource.h"
-LightSource::LightSource(float lightSourceIntensity, float k, const Vector3f &loc, const Color &lightColor)
+LightSource::LightSource(float lightSourceIntensity, float k, const Vector3f &loc, const RGB &lightColor)
     : intensity(lightSourceIntensity), k(k), loc(loc), color(lightColor) {}

@@ -33,9 +33,9 @@ void Scene::render() {
 }
 
 //Constructor
-Scene::Scene(std::string& fname, Vector2i screenSize, Color ambientColor, Vector3f eyeLoc)
-    : ambientColor(ambientColor), eyeLoc(eyeLoc), darkest(Color(INT_MAX, INT_MAX, INT_MAX)),
-      brightest(Color(0, 0, 0)), screenSize(screenSize) {
+Scene::Scene(std::string& fname, Vector2i screenSize, RGB ambientColor, Vector3f eyeLoc)
+    : ambientColor(ambientColor), eyeLoc(eyeLoc), darkest(RGB(2, 2, 2)),
+      brightest(RGB(0, 0, 0)), screenSize(screenSize) {
 
   polyhedra = readScene(fname);
 }
@@ -98,11 +98,11 @@ void readColorsFromFile(std::ifstream& f, Polyhedron& polyhedron) {
 
     auto vals = split(line, (char) 32);
 
-    r = stoi(vals[0]);
-    g = stoi(vals[1]);
-    b = stoi(vals[2]);
+    r = stof(vals[0]) / 255;
+    g = stof(vals[1]) / 255;
+    b = stof(vals[2]) / 255;
 
-    vertice.diffuseColor = Color(r, g, b);
+    vertice.diffuseColor = RGB(r, g, b);
   }
 }
 
@@ -196,12 +196,7 @@ std::vector<Polyhedron> Scene::readScene(std::string &fname) {
   }
 }*/
 
-//Returns the number of polyhedra in a scene
-int Scene::getNumPolyhedra() {
-  return (int) polyhedra.size();
-}
-
-void Scene::updateExtrema(Color color) {
+void Scene::updateExtrema(RGB color) {
   brightest.r = std::max(brightest.r, color.r);
   brightest.g = std::max(brightest.g, color.g);
   brightest.b = std::max(brightest.b, color.b);
@@ -239,4 +234,20 @@ BoundingBox Scene::computeBoundingBox() {
   return bb;
 }
 
+RGB Scene::normalize(RGB color) {
+  float highestIntensity = std::max(std::max(brightest.r, brightest.g), brightest.b);
+  float lowestIntensity = std::min(std::min(darkest.r, darkest.g), darkest.b);
+
+  float intensityRange = highestIntensity - lowestIntensity;
+
+  if (intensityRange == 0) {
+    return color;
+  }
+
+  float r = color.r / intensityRange;
+  float g = color.g / intensityRange;
+  float b = color.b / intensityRange;
+
+  return RGB(r, g, b);
+}
 

@@ -6,7 +6,7 @@
 #define HW2_LIGHTSOURCE_H
 
 #include "../Math/Vector3f.h"
-#include "Color.h"
+#include "RGB.h"
 
 class LightSource {
  public:
@@ -14,9 +14,9 @@ class LightSource {
   float k;
 
   Vector3f loc;
-  Color color;
+  RGB color;
 
-  LightSource(float lightSourceIntensity, float k, const Vector3f &loc, const Color &lightColor);
+  LightSource(float lightSourceIntensity, float k, const Vector3f &loc, const RGB &lightColor);
 };
 
 #endif //HW2_LIGHTSOURCE_H

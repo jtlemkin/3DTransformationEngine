@@ -45,7 +45,7 @@ class Polyhedron {
   Vector3f getVertexNormal(int vertexID);
   Vector3f getFaceNormal(int triangleID);
   int getVertexSpecularity(int vertexID);
-  Color getVertexColor(int vertexID, Vector3f& eyeLoc, LightSource light, Color ambientColor);
+  RGB getVertexColor(int vertexID, Vector3f& eyeLoc, LightSource light, RGB ambientColor);
 
   //void translate(float x, float y, float z);
   //void rotate(float angle, vector3 p1, vector3 p2);

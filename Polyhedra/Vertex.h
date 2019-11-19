@@ -9,7 +9,6 @@
 #include "Polyhedron.h"
 #include "../Math/Dimension.h"
 #include "../Math/Vector3f.h"
-#include "../Lighting/Color.h"
 #include "../Scene.h"
 #include "../Lighting/LightSource.h"
 #include "../Math/Vector2f.h"
@@ -24,8 +23,8 @@ class Vertex {
 
   float pos[4];
 
-  Color diffuseColor;
-  Color color;
+  RGB diffuseColor;
+  RGB color;
 
   std::vector<int> triangleIDs;
 
@@ -33,7 +32,7 @@ class Vertex {
   float y() const;
   float z() const;
 
-  explicit Vertex(int id, float x=0, float y=0, float z=0, Color diffuseColor = Color(0,0,0));
+  explicit Vertex(int id, float x=0, float y=0, float z=0, RGB diffuseColor = RGB(0,0,0));
 
   Vector2f flatten(Dimension d);
   void addTriangle(int triangleID);

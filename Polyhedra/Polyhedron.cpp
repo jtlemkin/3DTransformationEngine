@@ -34,8 +34,8 @@ void Polyhedron::renderTriangle(int triangleID, Scene& scene, Dimension toIgnore
 
   for (int y = yMin; y <= yMax; y++) {
     int xStart, xEnd;
-    Color cStart(-1,-1,-1);
-    Color cEnd(-1,-1,-1);
+    RGB cStart(-1,-1,-1);
+    RGB cEnd(-1,-1,-1);
 
     computeIntersectionLocationsAndColors(y, p1, p2, p3, v1.color, v2.color, v3.color, &xStart, &xEnd, &cStart, &cEnd);
 
@@ -45,7 +45,8 @@ void Polyhedron::renderTriangle(int triangleID, Scene& scene, Dimension toIgnore
       auto startRGB = scene.normalize(cStart);
       auto endRGB = scene.normalize(cEnd);
 
-      RGB displayRGB = startRGB.mult((float) (xEnd - x) / dx).add(endRGB.mult(((float) (x - xStart) / dx)));
+      RGB displayRGB = dx == 0 ? startRGB :
+                       startRGB.mult((float) (xEnd - x) / dx).add(endRGB.mult(((float) (x - xStart) / dx)));
 
       auto raster = Vector2i(x, y).toNDC(scene.screenSize.x, scene.screenSize.y);
 
@@ -100,21 +101,28 @@ int Polyhedron::getVertexSpecularity(int vertexID) {
   return specularity / (int) v.triangleIDs.size();
 }
 
-Color Polyhedron::getVertexColor(int vertexID, Vector3f &eyeLoc, LightSource light, Color ambientColor) {
+RGB Polyhedron::getVertexColor(int vertexID, Vector3f &eyeLoc, LightSource light, RGB ambientColor) {
   Vertex v = vertices[vertexID];
 
   float distanceBetweenPointAndEye = eyeLoc.minus(Vector3f(v.x(), v.y(), v.z())).magnitude();
   float intensityAtV = light.intensity / (distanceBetweenPointAndEye + light.k);
 
-  Vector3f vertexNormal = getVertexNormal(vertexID);
-  Vector3f lightVector = Vector3f(light.loc.x - v.x(), light.loc.y - v.y(), light.loc.z - v.z());
-  Vector3f reflectionVector = vertexNormal.multiply(2 * vertexNormal.dot(lightVector)).minus(lightVector);
-  Vector3f viewVector = eyeLoc.minus(Vector3f(v.x(), v.y(), v.z()));
+  Vector3f vertexNormal = getVertexNormal(vertexID).normalize();
+  Vector3f lightVector = Vector3f(light.loc.x - v.x(), light.loc.y - v.y(), light.loc.z - v.z()).normalize();
+  Vector3f reflectionVector = vertexNormal.multiply(2 * vertexNormal.dot(lightVector)).minus(lightVector).normalize();
+  Vector3f viewVector = eyeLoc.minus(Vector3f(v.x(), v.y(), v.z())).normalize();
 
-  Color _diffuseColor = v.diffuseColor.mult(lightVector.dot(vertexNormal));
-  Color specularColor = light.color.mult((float) pow(reflectionVector.dot(viewVector), getVertexSpecularity(vertexID)));
+  float lightDotNormal = lightVector.dot(vertexNormal);
+  float reflectionDotView = reflectionVector.dot(viewVector);
 
-  return ambientColor.add(_diffuseColor.add(specularColor).mult(intensityAtV));
+  RGB diffuseColor = lightDotNormal <= 0 ? RGB(0,0,0) : v.diffuseColor.mult(lightDotNormal);
+
+  RGB specularColor = lightDotNormal <= 0 || reflectionDotView <= 0 ?
+                      RGB(0,0,0) : light.color.mult((float) pow(reflectionDotView, getVertexSpecularity(vertexID)));
+
+  RGB finalColor = ambientColor.add(diffuseColor.add(specularColor).mult(intensityAtV));
+
+  return finalColor;
 }
 
 //Translates a polyhedron

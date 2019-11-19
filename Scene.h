@@ -9,12 +9,11 @@
 #include <fstream>
 #include <string>
 #include "Polyhedra/Vertex.h"
-#include "Lighting/Color.h"
 #include "Lighting/LightSource.h"
 #include "Math/BoundingBox.h"
 #include "Math/Vector2i.h"
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include "Util/Util.h"
 #include "Lighting/RGB.h"
 
@@ -22,14 +21,14 @@ class Polyhedron;
 
 class Scene {
  private:
-  Color ambientColor;
+  RGB ambientColor;
   Vector3f eyeLoc;
-  Color brightest;
-  Color darkest;
+  RGB brightest;
+  RGB darkest;
 
   std::vector<LightSource> lights;
 
-  void updateExtrema(Color color);
+  void updateExtrema(RGB color);
   void lightVertices();
 
   BoundingBox computeBoundingBox();
@@ -39,7 +38,7 @@ class Scene {
 
   std::vector<Polyhedron> polyhedra;
 
-  Scene(std::string& fname, Vector2i screenSize, Color ambientColor = Color(255,255,255),
+  Scene(std::string& fname, Vector2i screenSize, RGB ambientColor = RGB(0,0,0),
         Vector3f eyeLoc = Vector3f(1,1,1));
 
   void render();
@@ -48,6 +47,8 @@ class Scene {
   void writeScene(std::string &fname);
 
   void addLightSource(LightSource& light);
+
+  RGB normalize(RGB color);
 };
 
 #endif //HW2_VIEWINGPIPELINE_H

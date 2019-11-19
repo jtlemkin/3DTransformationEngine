@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
   scene.emplace_back(fname, win_size);
 
-  LightSource light = LightSource(1, 100, Vector3f(1,1,1), Color(255, 255, 255));
+  LightSource light = LightSource(1, 100, Vector3f(1,2,1), RGB(1, 1, 1));
 
   scene[0].addLightSource(light);
 
