@@ -52,6 +52,9 @@ class Polyhedron {
   //void scale(float factor);
 
   //vector3 getCentroid();
+ private:
+  std::vector<Triangle> insertionSort(Dimension toSort) const;
+  float getTriangleMin(int triangleID, Dimension toSort) const;
 };
 
 #endif //HW2_POLYGON_H

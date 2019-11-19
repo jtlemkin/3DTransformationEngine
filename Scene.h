@@ -38,7 +38,7 @@ class Scene {
 
   std::vector<Polyhedron> polyhedra;
 
-  Scene(std::string& fname, Vector2i screenSize, RGB ambientColor = RGB(0,0,0),
+  Scene(std::string& fname, Vector2i screenSize, RGB ambientColor = RGB(0,0,1),
         Vector3f eyeLoc = Vector3f(1,1,1));
 
   void render();
