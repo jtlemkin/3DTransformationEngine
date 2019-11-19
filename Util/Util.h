@@ -9,6 +9,10 @@
 #include <sstream>
 #include <vector>
 
+#include "../Math/Vector2i.h"
+
 std::vector<std::string> split(const std::string& s, char delimiter);
+int computeIntersection(int y, Vector2i p1, Vector2i p2);
+void getXRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, int* xMin, int* xMax);
 
 #endif //HW2_UTIL_H
