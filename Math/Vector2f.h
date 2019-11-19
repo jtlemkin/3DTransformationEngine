@@ -15,7 +15,7 @@ class Vector2f {
 
   Vector2f(float x, float y);
 
-  Vector2i getNDC(int width, int height);
+  Vector2i getDeviceCoords(int width, int height);
 };
 
 #endif //HW2_VECTOR2F_H

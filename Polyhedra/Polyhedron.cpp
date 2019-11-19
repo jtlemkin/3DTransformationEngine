@@ -9,9 +9,6 @@ Polyhedron::Polyhedron() {}
 
 //Transforms vertices through viewing pipeline and then draws all edges to screen
 void Polyhedron::render(Scene& scene, BoundingBox& boundingBox, Dimension toIgnore) const {
-  //auto normalVertices = normalizeVertices(vertices, boundingBox);
-  //auto flatVertices = flattenVertices(normalVertices, toIgnore);
-
   setViewport(scene.screenSize.x, scene.screenSize.y, toIgnore);
 
   for (int i = 0; i < triangles.size(); i++) {
@@ -24,26 +21,35 @@ void Polyhedron::render(Scene& scene, BoundingBox& boundingBox, Dimension toIgno
 void Polyhedron::renderTriangle(int triangleID, Scene& scene, Dimension toIgnore) const {
   Triangle t = triangles[triangleID];
 
-  Vertex v1 = vertices[t.v1ID];
-  Vertex v2 = vertices[t.v2ID];
-  Vertex v3 = vertices[t.v3ID];
+  auto v1 = vertices[t.v1ID];
+  auto v2 = vertices[t.v2ID];
+  auto v3 = vertices[t.v3ID];
 
-  Vector2i p1 = v1.flatten(toIgnore).getNDC(scene.screenSize.x, scene.screenSize.y);
-  Vector2i p2 = v2.flatten(toIgnore).getNDC(scene.screenSize.x, scene.screenSize.y);
-  Vector2i p3 = v3.flatten(toIgnore).getNDC(scene.screenSize.x, scene.screenSize.y);
+  Vector2i p1 = v1.flatten(toIgnore).getDeviceCoords(scene.screenSize.x, scene.screenSize.y);
+  Vector2i p2 = v2.flatten(toIgnore).getDeviceCoords(scene.screenSize.x, scene.screenSize.y);
+  Vector2i p3 = v3.flatten(toIgnore).getDeviceCoords(scene.screenSize.x, scene.screenSize.y);
 
   int yMin = std::min(std::min(p1.y, p2.y), p3.y);
   int yMax = std::max(std::max(p1.y, p2.y), p3.y);
 
   for (int y = yMin; y <= yMax; y++) {
     int xStart, xEnd;
+    Color cStart(-1,-1,-1);
+    Color cEnd(-1,-1,-1);
 
-    getXRange(y, p1, p2, p3, &xStart, &xEnd);
+    computeIntersectionLocationsAndColors(y, p1, p2, p3, v1.color, v2.color, v3.color, &xStart, &xEnd, &cStart, &cEnd);
+
+    float dx = xEnd - xStart;
 
     for(int x = xStart; x <= xEnd; x++) {
+      auto startRGB = scene.normalize(cStart);
+      auto endRGB = scene.normalize(cEnd);
+
+      RGB displayRGB = startRGB.mult((float) (xEnd - x) / dx).add(endRGB.mult(((float) (x - xStart) / dx)));
+
       auto raster = Vector2i(x, y).toNDC(scene.screenSize.x, scene.screenSize.y);
 
-      draw_pix(raster.x, raster.y, 1, 1, 1);
+      draw_pix(raster.x, raster.y, displayRGB.r, displayRGB.g, displayRGB.b);
     }
   }
 }

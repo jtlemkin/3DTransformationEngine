@@ -10,6 +10,9 @@ class RGB {
   float r, g, b;
 
   RGB(float r, float g, float b);
+
+  RGB mult(float n);
+  RGB add(RGB rgb2);
 };
 
 #endif //HW2_RGB_H
