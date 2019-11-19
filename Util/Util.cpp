@@ -118,3 +118,12 @@ void getXRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, int* xMin, int* xMa
     return;
   }
 }
+
+//Normalizes a float to a value between 0 and 1
+float normalize(float val, float min, float max) {
+  if (max == min) {
+    return 0;
+  }
+
+  return (val - min) / (max - min) * 2 - 1;
+}

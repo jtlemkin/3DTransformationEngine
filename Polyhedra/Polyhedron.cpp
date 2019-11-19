@@ -7,41 +7,6 @@
 //Constructor
 Polyhedron::Polyhedron() {}
 
-//Normalizes a float to a value between 0 and 1
-float normalize(float val, float min, float max) {
-  if (max == min) {
-    return 0;
-  }
-
-  return (val - min) / (max - min) * 2 - 1;
-}
-
-//Returns a vector of vertices that have been normalized within the bounding box
-std::vector<Vertex> normalizeVertices(std::vector<Vertex> vertices, BoundingBox boundingBox) {
-  std::vector<Vertex> normalizedVertices;
-
-  for (const auto& vertex : vertices) {
-    auto x = normalize(vertex.x(), boundingBox.min, boundingBox.max);
-    auto y = normalize(vertex.y(), boundingBox.min, boundingBox.max);
-    auto z = normalize(vertex.z(), boundingBox.min, boundingBox.max);
-
-    normalizedVertices.emplace_back(x, y, z);
-  }
-
-  return normalizedVertices;
-}
-
-//Returns a vector of 2D vertices from 3D vertices for drawing
-std::vector<Vertex> flattenVertices(std::vector<Vertex> vertices, Dimension d) {
-  std::vector<Vertex> flattenedVertices = vertices;
-
-  for (auto& vertex : flattenedVertices) {
-    vertex.flatten(d);
-  }
-
-  return flattenedVertices;
-}
-
 //Transforms vertices through viewing pipeline and then draws all edges to screen
 void Polyhedron::render(Scene& scene, BoundingBox& boundingBox, Dimension toIgnore) const {
   //auto normalVertices = normalizeVertices(vertices, boundingBox);
@@ -69,9 +34,6 @@ void Polyhedron::renderTriangle(int triangleID, Scene& scene, Dimension toIgnore
 
   int yMin = std::min(std::min(p1.y, p2.y), p3.y);
   int yMax = std::max(std::max(p1.y, p2.y), p3.y);
-
-  int xMin = std::min(std::min(p1.x, p2.x), p3.x);
-  int xMax = std::max(std::max(p1.x, p2.x), p3.x);
 
   for (int y = yMin; y <= yMax; y++) {
     int xStart, xEnd;
