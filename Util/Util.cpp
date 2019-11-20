@@ -52,23 +52,14 @@ int computeIntersection(int y, Vector2i p1, Vector2i p2) {
   }
 }
 
-void getIntensityRange(int y, Vector2i p1, Vector2i p2, Vector2i p3, RGB c1, RGB c2, RGB c3, RGB* cMin,
-                       RGB* cMax) {
-  int i1 = computeIntersection(y, p1, p2);
-  int i2 = computeIntersection(y, p2, p3);
-  int i3 = computeIntersection(y, p3, p1);
-
-
-}
-
 RGB computeGouraudRange(RGB *cMin, RGB *cMax, RGB c1, RGB c2, Vector2i p1, Vector2i p2) {
   if (cMin->r == -1) {
     *cMin = c1;
     *cMax = c2;
   } else {
-    cMin->r += (c2.r - c1.r) / (p1.y - p2.y);
-    cMin->g += (c2.g - c1.g) / (p1.y - p2.y);
-    cMin->b += (c2.b - c1.b) / (p1.y - p2.y);
+    cMin->r += (c2.r - c1.r) / (p2.y - p1.y);
+    cMin->g += (c2.g - c1.g) / (p2.y - p1.y);
+    cMin->b += (c2.b - c1.b) / (p2.y - p1.y);
   }
 }
 
@@ -88,6 +79,38 @@ void computeIntersectionLocationsAndColors(int y, Vector2i p1, Vector2i p2, Vect
   int i1 = computeIntersection(y, p1, p2);
   int i2 = computeIntersection(y, p2, p3);
   int i3 = computeIntersection(y, p3, p1);
+
+  /*if (i1 < -1) {
+    if (i2 < i3) {
+      Vector2i top;
+      RGB topc;
+      Vector2i bot;
+      RGB botc;
+
+      if (p2.y > p3.y) {
+        top = p2;
+        topc = c2;
+        bot = p3;
+        botc = c3;
+      } else {
+        top = p3;
+        bot = p2;
+        topc = c3;
+        botc = c2;
+      }
+
+      if (cMin->r == -1) {
+        *cMin = c1;
+        *cMax = c2;
+      } else {
+        cMin->r += (topc.r - c3.r) / (p2.y - p1.y);
+        cMin->g += (c2.g - c1.g) / (p2.y - p1.y);
+        cMin->b += (c2.b - c1.b) / (p2.y - p1.y);
+
+
+      }
+    }
+  }*/
 
   //No special cases
   if (i1 >= 0 && i2 >= 0 && i3 >= 0) {

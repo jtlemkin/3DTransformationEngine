@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 
   scene.emplace_back(fname, win_size);
 
-  LightSource light = LightSource(0.5, 1, Vector3f(2,2,2), RGB(1, 1, 1));
+  LightSource light = LightSource(1, 3, Vector3f(1,1,1), RGB(1, 1, 1));
 
   scene[0].addLightSource(light);
 
@@ -188,24 +188,31 @@ void runHW3UI() {
   std::string choice;
   std::cin >> choice;
 
-  int polygonID;
-  std::cin >> polygonID;
-
-  if (choice.compare("a") == 0) {
+  if (choice == "a") {
     float r, g, b;
     std::cin >> r >> g >> b;
 
     scene[0].ambientColor = RGB(r, g, b);
-  } else if (choice.compare("i") == 0) {
+  } else if (choice == "i") {
     float i;
 
     std::cin >> i;
 
     scene[0].lights[0].intensity = i;
-  } else if (choice.compare("e") == 0) {
+  } else if (choice == "e") {
     float x, y, z;
     std::cin >> x >> y >> z;
 
     scene[0].eyeLoc = Vector3f(x, y, z);
+  } else if (choice == "l") {
+    float x, y, z;
+    std::cin >> x >> y >> z;
+
+    scene[0].lights[0].loc = Vector3f(x, y, z);
+  } else if (choice == "c") {
+    float r, g, b;
+    std::cin >> r >> g >> b;
+
+    scene[0].lights[0].color = RGB(r, g, b);
   }
 }

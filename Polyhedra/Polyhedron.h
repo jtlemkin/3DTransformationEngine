@@ -55,6 +55,7 @@ class Polyhedron {
  private:
   float getTriangleMax(int triangleID, Dimension toSort) const;
   std::vector<Triangle> sortTriangles(Dimension toSortBy) const;
+  std::vector<Vertex> sortVertices(Dimension toSortBy) const;
 };
 
 #endif //HW2_POLYGON_H

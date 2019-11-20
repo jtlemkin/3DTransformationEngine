@@ -27,7 +27,17 @@ Vector3f Vector3f::minus(const Vector3f v2) const {
 }
 
 float Vector3f::dot(Vector3f v2) const {
-  return x * v2.x + y * v2.y + z * v2.z;
+  float xTerm = x * v2.x;
+  float yTerm = y * v2.y;
+  float zTerm = z * v2.z;
+
+  xTerm = xTerm >= 0 ? xTerm : 0;
+  yTerm = yTerm >= 0 ? yTerm : 0;
+  zTerm = zTerm >= 0 ? zTerm : 0;
+
+  return xTerm + yTerm + zTerm;
+
+  //return x * v2.x + y * v2.y + z * v2.z;
 }
 Vector3f Vector3f::multiply(float n) const {
   return Vector3f(n * x, n * y, n * z);

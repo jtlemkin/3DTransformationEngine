@@ -14,10 +14,18 @@ void Polyhedron::render(Scene& scene, BoundingBox& boundingBox, Dimension toIgno
   auto sorted = sortTriangles(toIgnore);
 
   for (const auto& tri : sorted) {
-    std::cout << tri.id << " " << getTriangleMax(tri.id, toIgnore) << "\n";
     renderTriangle(tri.id, scene, toIgnore);
   }
-  std::cout << "\n";
+
+  /*for (const auto& v : sortVertices(toIgnore)) {
+    auto t = v;
+    auto c = scene.normalize(t.color);
+    auto raster = t.flatten(toIgnore).getDeviceCoords(scene.screenSize.x, scene.screenSize.y).toNDC(scene.screenSize.x, scene.screenSize.y);
+
+    glPointSize(10);
+    draw_pix(raster.x, raster.y, c.r, c.g, c.b);
+    glPointSize(1);
+  }*/
 
   resetViewport(scene.screenSize.x, scene.screenSize.y);
 }
@@ -36,10 +44,11 @@ void Polyhedron::renderTriangle(int triangleID, Scene& scene, Dimension toIgnore
   int yMin = std::min(std::min(p1.y, p2.y), p3.y);
   int yMax = std::max(std::max(p1.y, p2.y), p3.y);
 
+  RGB cStart(-1,-1,-1);
+  RGB cEnd(-1,-1,-1);
+
   for (int y = yMin; y <= yMax; y++) {
     int xStart, xEnd;
-    RGB cStart(-1,-1,-1);
-    RGB cEnd(-1,-1,-1);
 
     computeIntersectionLocationsAndColors(y, p1, p2, p3, v1.color, v2.color, v3.color, &xStart, &xEnd, &cStart, &cEnd);
 
@@ -98,7 +107,7 @@ int Polyhedron::getVertexSpecularity(int vertexID) {
     specularity += triangles[triangleID].specularity;
   }
 
-  if (v.triangleIDs.size() == 0) {
+  if (v.triangleIDs.empty()) {
     return 0;
   }
 
@@ -119,9 +128,9 @@ RGB Polyhedron::getVertexColor(int vertexID, Vector3f &eyeLoc, LightSource light
   float lightDotNormal = lightVector.dot(vertexNormal);
   float reflectionDotView = reflectionVector.dot(viewVector);
 
-  RGB diffuseColor = lightDotNormal <= 0 ? RGB(0,0,0) : v.diffuseColor.mult(lightDotNormal);
+  RGB diffuseColor = lightDotNormal < 0 ? RGB(0,0,0) : v.diffuseColor.mult(lightDotNormal);
 
-  RGB specularColor = lightDotNormal <= 0 || reflectionDotView <= 0 ?
+  RGB specularColor = lightDotNormal < 0 || reflectionDotView <= 0 ?
                       RGB(0,0,0) : light.color.mult((float) pow(reflectionDotView, getVertexSpecularity(vertexID)));
 
   RGB finalColor = ambientColor.add(diffuseColor.add(specularColor).mult(intensityAtV));
@@ -144,6 +153,16 @@ std::vector<Triangle> Polyhedron::sortTriangles(Dimension toSortBy) const {
 
   std::sort(sorted.begin(), sorted.end(), [this, toSortBy](Triangle t1, Triangle t2) {
     return getTriangleMax(t1.id, toSortBy) < getTriangleMax(t2.id, toSortBy);
+  });
+
+  return sorted;
+}
+
+std::vector<Vertex> Polyhedron::sortVertices(Dimension toSortBy) const {
+  auto sorted = vertices;
+
+  std::sort(sorted.begin(), sorted.end(), [this, toSortBy](Vertex v1, Vertex v2) {
+    return v1.pos[toSortBy] < v1.pos[toSortBy];
   });
 
   return sorted;

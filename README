@@ -2,7 +2,7 @@ Hello Alex or Sai!
 
 Compile with the command: make
 
-Run the executable (hw2) with the absolute path of the test file you'd like to load the vertices with.
+Run the executable (hw3) with the absolute path of the test file you'd like to load the polyhedra with.
 
 On running the executable you will see a GLUT window partitioned into 4 squares.
 In the top left corner is the XY plane. In the top right is the XZ plane.
@@ -10,13 +10,19 @@ In the bottom left is the YZ plane.
 
 In order to give the program input you must click on the GLUT window.
 
-The range of polyhedra IDs will be printed to the screen and then you will be prompted to give
-a command from the list of options.
+A prompt will be written to the screen giving you options.
 
-Translate takes a Polygon ID, X, Y, Z values to translate the polygon by.
-Rotate takes a Polygon ID, an angle in degrees, and points specifying P1 and P2 of a rotation axis.
-Scales takes a Polygon ID and a scaling factor.
+Change ambient color
+ex. a 1 1 1
 
-ex. transl 0 .5 .5 .5
-ex. rot 1 45 0 0 0 1 1 1
-ex. scale 0 2
+Change light intensity
+ex. i 0
+
+Change location of the eye
+ex. e 1 1 1
+
+Change location of the light
+ex.  l 10 0 0
+
+Change color of the light
+ex. c 1 1 1
