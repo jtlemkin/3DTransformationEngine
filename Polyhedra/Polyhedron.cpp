@@ -11,10 +11,10 @@ Polyhedron::Polyhedron() {}
 void Polyhedron::render(Scene& scene, BoundingBox& boundingBox, Dimension toIgnore) const {
   setViewport(scene.screenSize.x, scene.screenSize.y, toIgnore);
 
-  auto sorted = insertionSort(toIgnore);
+  auto sorted = sortTriangles(toIgnore);
 
   for (const auto& tri : sorted) {
-    std::cout << tri.id << " " << getTriangleMin(tri.id, toIgnore) << "\n";
+    std::cout << tri.id << " " << getTriangleMax(tri.id, toIgnore) << "\n";
     renderTriangle(tri.id, scene, toIgnore);
   }
   std::cout << "\n";
@@ -82,9 +82,9 @@ Vector3f Polyhedron::getFaceNormal(int triangleID) {
   Vector3f a = Vector3f(v2.x() - v1.x(), v2.y() - v1.y(), v2.z() - v1.z());
   Vector3f b = Vector3f(v3.x() - v1.x(), v3.y() - v1.y(), v3.z() - v1.z());
 
-  float x = (a.y * b.z) - (a.z - b.y);
-  float y = (a.z - b.x) - (a.x * b.z);
-  float z = (a.x * b.y) - (a.y - b.x);
+  float x = (a.y * b.z) - (a.z * b.y);
+  float y = (a.z * b.x) - (a.x * b.z);
+  float z = (a.x * b.y) - (a.y * b.x);
 
   return Vector3f(x, y, z);
 }
@@ -129,79 +129,22 @@ RGB Polyhedron::getVertexColor(int vertexID, Vector3f &eyeLoc, LightSource light
   return finalColor;
 }
 
-float Polyhedron::getTriangleMin(int triangleID, Dimension toSort) const {
+float Polyhedron::getTriangleMax(int triangleID, Dimension toSort) const {
   Triangle t = triangles[triangleID];
 
   Vertex v1 = vertices[t.v1ID];
   Vertex v2 = vertices[t.v2ID];
   Vertex v3 = vertices[t.v3ID];
 
-  return std::min(std::min(v1.pos[toSort], v2.pos[toSort]), v3.pos[toSort]);
+  return std::max(std::max(v1.pos[toSort], v2.pos[toSort]), v3.pos[toSort]);
 }
 
-void swap(std::vector<Triangle>& tris, int i, int j)
-{
-  Triangle temp = tris[i];
-  tris[i] = tris[j];
-  tris[j] = temp;
-}
+std::vector<Triangle> Polyhedron::sortTriangles(Dimension toSortBy) const {
+  auto sorted = triangles;
 
-/*std::vector<Triangle> Polyhedron::insertionSort(Dimension toSort) const {
-  std::vector<Triangle> sorted = triangles;
-
-  int i, j;
-  for (i = 1; i < sorted.size(); i++) {
-    Triangle triAtI = sorted[i];
-
-    float key = getMin(vertices, sorted, i, toSort);
-    j = i - 1;
-
-    while (j >= 0 && getMin(vertices, sorted, j, toSort) < key) {
-      sorted[j + 1] = sorted[j];
-      j = j - 1;
-    }
-    sorted[j + 1] = triAtI;
-
-    for (const auto &x : sorted) {
-      std::cout << (int) (getTriangleMin(x.id, toSort) * 100) << " ";
-    }
-
-    std::cout << "\n";
-  }
-
-  std::cout << "\n";
-
-  return sorted;
-}*/
-
-// A function to implement bubble sort
-std::vector<Triangle> Polyhedron::insertionSort(Dimension toSort) const {
-  std::vector<Triangle> sorted = triangles;
-
-  int i, j;
-  for (i = 0; i < sorted.size() -1; i++) {
-    // Last i elements are already in place
-    for (j = 0; j < sorted.size() - i - 1; j++) {
-      Triangle t1 = triangles[j];
-
-      float max1 = getTriangleMin(t1.id, toSort);
-
-      Triangle t2 = triangles[j + 1];
-
-      float max2 = getTriangleMin(t2.id, toSort);
-
-      if (max1 < max2) {
-        swap(sorted, j, j + 1);
-      }
-    }
-
-    for (const auto &x : sorted) {
-      std::cout << getTriangleMin(x.id, toSort) << " ";
-    }
-
-    std::cout << "\n";
-  }
-  std::cout << "\n";
+  std::sort(sorted.begin(), sorted.end(), [this, toSortBy](Triangle t1, Triangle t2) {
+    return getTriangleMax(t1.id, toSortBy) < getTriangleMax(t2.id, toSortBy);
+  });
 
   return sorted;
 }

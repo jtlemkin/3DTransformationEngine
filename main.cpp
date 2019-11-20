@@ -44,11 +44,9 @@ int main(int argc, char **argv)
   std::string temp(argv[1]);
   fname = temp;
 
-  runHW3UI();
-
   scene.emplace_back(fname, win_size);
 
-  LightSource light = LightSource(5, 1, Vector3f(1,1,1), RGB(1, 1, 1));
+  LightSource light = LightSource(0.5, 1, Vector3f(2,2,2), RGB(1, 1, 1));
 
   scene[0].addLightSource(light);
 
