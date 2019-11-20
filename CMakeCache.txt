@@ -135,7 +135,7 @@ CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.14
 CMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=hw2
+CMAKE_PROJECT_NAME:STATIC=hw3
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib
@@ -212,6 +212,18 @@ hw2_BINARY_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
 
 //Value Computed by CMake
 hw2_SOURCE_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
+
+//Value Computed by CMake
+hw3_BINARY_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
+
+//Value Computed by CMake
+hw3_SOURCE_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
+
+//Value Computed by CMake
+hw_BINARY_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
+
+//Value Computed by CMake
+hw_SOURCE_DIR:STATIC=/Users/jameslemkin/Developer/ecs175/hw2
 
 
 ########################

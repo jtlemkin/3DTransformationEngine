@@ -1,6 +1,6 @@
 Hello Alex or Sai!
 
-Compile with the command: make
+Compile with the command: 'cmake CMakeLists.txt' and then 'make'
 
 Run the executable (hw3) with the absolute path of the test file you'd like to load the polyhedra with.
 
